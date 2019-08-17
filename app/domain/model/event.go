@@ -2,6 +2,7 @@ package model
 
 import "time"
 
+// Модель событий
 type Event struct {
 	UUID           int           `json:"uuid"`                       //UUID - уникальный идентификатор события
 	Title          string        `json:"title"`                      //Заголовок - короткий текст
