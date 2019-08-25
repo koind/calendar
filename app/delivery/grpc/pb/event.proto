@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package="pb";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+
+message EventRequest {
+    string title = 1;
+    google.protobuf.Timestamp datetime = 2;
+    google.protobuf.Duration duration = 3;
+    string description = 4;
+    int32 user_id = 5;
+    google.protobuf.Timestamp time_send_notify = 6;
+}
+
+message EventResponse {
+    int32 uuid = 1;
+    string title = 2;
+    google.protobuf.Timestamp datetime = 3;
+    google.protobuf.Duration duration = 4;
+    string description = 5;
+    int32 user_id = 6;
+    google.protobuf.Timestamp time_send_notify = 7;
+}
+
+message EventID {
+    int32 uuid = 1;
+}
+
+message EventStatus {
+    string status = 1;
+}
+
+message EventChange {
+    EventID eventID = 1;
+    EventRequest request = 2;
+}
+
+// grpc-сервис
+service Event {
+    // Создает новое событие
+    rpc Create(EventRequest) returns (EventResponse);
+
+    // Обновляет событие
+    rpc Update(EventChange) returns (EventResponse);
+
+    // Удаляет событие
+    rpc Delete(EventID) returns (EventStatus);
+}

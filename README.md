@@ -1,10 +1,15 @@
 # calendar
 Microservice calendar on Go
 
-## Run
+## Run HTTP Server
 
 ```
-CALENDAR_HOST="localhost" CALENDAR_PORT=7777 go run cmd/main.go
+CALENDAR_HOST="localhost" CALENDAR_PORT=7777 go run cmd/http_server.go
+```
+
+## Run gRPC Server
+```
+CALENDAR_HOST="0.0.0.0" CALENDAR_PORT=50051 go run cmd/grpc_server.go
 ```
 
 ## API requests

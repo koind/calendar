@@ -2,7 +2,7 @@ package server
 
 import (
 	"github.com/gorilla/mux"
-	handle "github.com/koind/calendar/app/adapter/service/http"
+	"github.com/koind/calendar/app/delivery/http/service"
 	"net/http"
 )
 
@@ -10,7 +10,7 @@ import (
 type HttpServer struct {
 	domain string
 	router http.Handler
-	s      *handle.EventService
+	s      *service.EventService
 }
 
 // Start fires up the http server
@@ -19,7 +19,7 @@ func (s *HttpServer) Start() error {
 }
 
 // NewHTTPServer returns http server that wraps event business logic
-func NewHTTPServer(handleService *handle.EventService, domain string) *HttpServer {
+func NewHTTPServer(handleService *service.EventService, domain string) *HttpServer {
 
 	r := mux.NewRouter()
 	hs := HttpServer{router: r, domain: domain, s: handleService}
