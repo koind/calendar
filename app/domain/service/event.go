@@ -1,20 +1,19 @@
 package service
 
 import (
-	"github.com/koind/calendar/app/domain/model"
 	"github.com/koind/calendar/app/domain/repository"
 )
 
 // Интерфейс сервиса событий
 type EventServiceInterface interface {
 	// Ищет событие оп UUID
-	FindByUUID(UUID int) (*model.Event, error)
+	FindByUUID(UUID int) (*repository.Event, error)
 
 	// Создает новое событие
-	Create(event model.Event) (*model.Event, error)
+	Create(event repository.Event) (*repository.Event, error)
 
 	// Обновляет событие
-	Update(UUID int, event model.Event) (*model.Event, error)
+	Update(UUID int, event repository.Event) (*repository.Event, error)
 
 	// Удаляет событие
 	Delete(UUID int) error
@@ -33,7 +32,7 @@ type EventService struct {
 }
 
 // Ищет событие оп UUID
-func (service *EventService) FindByUUID(UUID int) (*model.Event, error) {
+func (service *EventService) FindByUUID(UUID int) (*repository.Event, error) {
 	event, err := service.eventRepository.FindByUUID(UUID)
 	if err != nil {
 		return nil, nil
@@ -43,7 +42,7 @@ func (service *EventService) FindByUUID(UUID int) (*model.Event, error) {
 }
 
 // Создает новое событие
-func (service *EventService) Create(event model.Event) (*model.Event, error) {
+func (service *EventService) Create(event repository.Event) (*repository.Event, error) {
 	newEvent, err := service.eventRepository.Create(event)
 	if err != nil {
 		return nil, err
@@ -53,7 +52,7 @@ func (service *EventService) Create(event model.Event) (*model.Event, error) {
 }
 
 // Обновляет событие
-func (service *EventService) Update(UUID int, event model.Event) (*model.Event, error) {
+func (service *EventService) Update(UUID int, event repository.Event) (*repository.Event, error) {
 	newEvent, err := service.eventRepository.Update(UUID, event)
 	if err != nil {
 		return nil, err

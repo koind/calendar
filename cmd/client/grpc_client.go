@@ -1,4 +1,4 @@
-package main
+package client
 
 import (
 	"context"
@@ -33,11 +33,13 @@ func main() {
 	timestamp, err := ptypes.TimestampProto(time.Now())
 	if err != nil {
 		log.Println(err)
+		return
 	}
 
 	notifyTime, err := ptypes.TimestampProto(time.Now().Add(100))
 	if err != nil {
 		log.Println(err)
+		return
 	}
 
 	request := &pb.EventRequest{

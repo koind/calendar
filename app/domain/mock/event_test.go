@@ -1,21 +1,21 @@
-package repository
+package mock
 
 import (
-	"github.com/koind/calendar/app/domain/model"
+	"github.com/koind/calendar/app/domain/repository"
 	"testing"
 	"time"
 )
 
 const evntUUID = 1
 
-var dummyEventRepository EventRepositoryInterface
+var dummyEventRepository repository.EventRepositoryInterface
 
 func init() {
 	dummyEventRepository = NewDummyEventRepository()
 }
 
 func before() {
-	event := model.Event{
+	event := repository.Event{
 		UUID:           1,
 		Title:          "Купить часы",
 		Datetime:       time.Now(),
@@ -33,7 +33,7 @@ func after() {
 }
 
 func TestDummyEventRepository_Create(t *testing.T) {
-	event := model.Event{
+	event := repository.Event{
 		UUID:           1,
 		Title:          "Купить часы",
 		Datetime:       time.Now(),
@@ -54,7 +54,7 @@ func TestDummyEventRepository_Create(t *testing.T) {
 func TestDummyEventRepository_Update(t *testing.T) {
 	before()
 
-	event := model.Event{
+	event := repository.Event{
 		UUID:           1,
 		Title:          "Купить Rolex",
 		Datetime:       time.Now(),
@@ -70,8 +70,8 @@ func TestDummyEventRepository_Update(t *testing.T) {
 	}
 
 	_, err = dummyEventRepository.Update(22, event)
-	if err != EventNotFountError {
-		t.Errorf("Ошибки должны совподать: %v - %v", err, EventNotFountError)
+	if err != repository.EventNotFountError {
+		t.Errorf("Ошибки должны совподать: %v - %v", err, repository.EventNotFountError)
 	}
 
 	after()
@@ -86,8 +86,8 @@ func TestDummyEventRepository_Delete(t *testing.T) {
 	}
 
 	_, err = dummyEventRepository.FindByUUID(1)
-	if err != EventNotFountError {
-		t.Errorf("Ошибки должны совподать: %v - %v", err, EventNotFountError)
+	if err != repository.EventNotFountError {
+		t.Errorf("Ошибки должны совподать: %v - %v", err, repository.EventNotFountError)
 	}
 }
 

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/koind/calendar/app/delivery/grpc/pb"
-	"github.com/koind/calendar/app/domain/model"
+	"github.com/koind/calendar/app/domain/repository"
 	"github.com/koind/calendar/app/domain/service"
 )
 
@@ -34,7 +34,7 @@ func (s *EventServer) Create(ctx context.Context, req *pb.EventRequest) (*pb.Eve
 		return nil, err
 	}
 
-	newEvent := model.Event{
+	newEvent := repository.Event{
 		Title:          req.GetTitle(),
 		Datetime:       datetime,
 		Duration:       duration,
@@ -84,7 +84,7 @@ func (s *EventServer) Update(ctx context.Context, eventChange *pb.EventChange) (
 		return nil, err
 	}
 
-	newEvent := model.Event{
+	newEvent := repository.Event{
 		Title:          req.GetTitle(),
 		Datetime:       datetime,
 		Duration:       duration,

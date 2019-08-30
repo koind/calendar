@@ -3,7 +3,7 @@ package service
 import (
 	"encoding/json"
 	"github.com/gorilla/mux"
-	"github.com/koind/calendar/app/domain/model"
+	"github.com/koind/calendar/app/domain/repository"
 	"github.com/koind/calendar/app/domain/service"
 	"go.uber.org/zap"
 	"net/http"
@@ -27,7 +27,7 @@ func NewEventService(event service.EventServiceInterface, logger *zap.Logger) *E
 // Обработчик создания события
 func (service *EventService) CreateHandle(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
-	event := model.Event{}
+	event := repository.Event{}
 
 	err := decoder.Decode(&event)
 	if err != nil {
@@ -60,7 +60,7 @@ func (service *EventService) UpdateHandle(w http.ResponseWriter, r *http.Request
 		uuid, _ := strconv.Atoi(id)
 
 		decoder := json.NewDecoder(r.Body)
-		event := model.Event{}
+		event := repository.Event{}
 
 		err := decoder.Decode(&event)
 		if err != nil {
