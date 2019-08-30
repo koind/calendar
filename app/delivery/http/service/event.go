@@ -57,12 +57,16 @@ func (service *EventService) UpdateHandle(w http.ResponseWriter, r *http.Request
 	vars := mux.Vars(r)
 
 	if id, ok := vars["uuid"]; ok {
-		uuid, _ := strconv.Atoi(id)
+		uuid, err := strconv.Atoi(id)
+		if err != nil {
+			w.Write([]byte(err.Error()))
+			return
+		}
 
 		decoder := json.NewDecoder(r.Body)
 		event := repository.Event{}
 
-		err := decoder.Decode(&event)
+		err = decoder.Decode(&event)
 		if err != nil {
 			w.WriteHeader(400)
 		}
@@ -94,9 +98,13 @@ func (service *EventService) DeleteHandle(w http.ResponseWriter, r *http.Request
 	vars := mux.Vars(r)
 
 	if id, ok := vars["uuid"]; ok {
-		uuid, _ := strconv.Atoi(id)
+		uuid, err := strconv.Atoi(id)
+		if err != nil {
+			w.Write([]byte(err.Error()))
+			return
+		}
 
-		err := service.Delete(uuid)
+		err = service.Delete(uuid)
 		if err != nil {
 			service.logger.Error(
 				"Во время удаления события возникла ошибка",
