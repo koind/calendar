@@ -1,4 +1,4 @@
-package mock
+package memory
 
 import (
 	"github.com/koind/calendar/app/domain/repository"
@@ -6,20 +6,20 @@ import (
 	"time"
 )
 
-func NewDummyEventRepository() *DummyEventRepository {
-	return &DummyEventRepository{
+func NewEventRepository() *EventRepository {
+	return &EventRepository{
 		DB: make(map[int]repository.Event),
 	}
 }
 
 // Фиктивный репозиторий событий
-type DummyEventRepository struct {
+type EventRepository struct {
 	sync.RWMutex
 	DB map[int]repository.Event
 }
 
 // Ищет событие оп UUID
-func (r *DummyEventRepository) FindByUUID(UUID int) (*repository.Event, error) {
+func (r *EventRepository) FindByUUID(UUID int) (*repository.Event, error) {
 	r.RLock()
 	defer r.RUnlock()
 
@@ -32,7 +32,7 @@ func (r *DummyEventRepository) FindByUUID(UUID int) (*repository.Event, error) {
 }
 
 // Создает новое событие
-func (r *DummyEventRepository) Create(event repository.Event) (*repository.Event, error) {
+func (r *EventRepository) Create(event repository.Event) (*repository.Event, error) {
 	r.Lock()
 	defer r.Unlock()
 
@@ -42,7 +42,7 @@ func (r *DummyEventRepository) Create(event repository.Event) (*repository.Event
 }
 
 // Обновляет событие
-func (r *DummyEventRepository) Update(UUID int, event repository.Event) (*repository.Event, error) {
+func (r *EventRepository) Update(UUID int, event repository.Event) (*repository.Event, error) {
 	_, err := r.FindByUUID(UUID)
 	if err != nil {
 		return nil, err
@@ -57,7 +57,7 @@ func (r *DummyEventRepository) Update(UUID int, event repository.Event) (*reposi
 }
 
 // Удаляет событие
-func (r *DummyEventRepository) Delete(UUID int) error {
+func (r *EventRepository) Delete(UUID int) error {
 	_, err := r.FindByUUID(UUID)
 	if err != nil {
 		return err
@@ -72,7 +72,7 @@ func (r *DummyEventRepository) Delete(UUID int) error {
 }
 
 // Ищет события на день
-func (r *DummyEventRepository) FindOnDay(day time.Time) ([]repository.Event, error) {
+func (r *EventRepository) FindOnDay(day time.Time) ([]repository.Event, error) {
 	r.RLock()
 	defer r.RUnlock()
 
@@ -91,7 +91,7 @@ func (r *DummyEventRepository) FindOnDay(day time.Time) ([]repository.Event, err
 }
 
 // Ищет события на неделю
-func (r *DummyEventRepository) FindOnWeek(week time.Weekday) ([]repository.Event, error) {
+func (r *EventRepository) FindOnWeek(week time.Weekday) ([]repository.Event, error) {
 	r.RLock()
 	defer r.RUnlock()
 
@@ -110,7 +110,7 @@ func (r *DummyEventRepository) FindOnWeek(week time.Weekday) ([]repository.Event
 }
 
 // Ищет события на месяц
-func (r *DummyEventRepository) FindOnMonth(month time.Month) ([]repository.Event, error) {
+func (r *EventRepository) FindOnMonth(month time.Month) ([]repository.Event, error) {
 	r.RLock()
 	defer r.RUnlock()
 

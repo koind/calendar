@@ -1,4 +1,4 @@
-package mock
+package memory
 
 import (
 	"github.com/koind/calendar/app/domain/repository"
@@ -8,10 +8,10 @@ import (
 
 const evntUUID = 1
 
-var dummyEventRepository repository.EventRepositoryInterface
+var eventRepository repository.EventRepositoryInterface
 
 func init() {
-	dummyEventRepository = NewDummyEventRepository()
+	eventRepository = NewEventRepository()
 }
 
 func before() {
@@ -25,14 +25,14 @@ func before() {
 		TimeSendNotify: time.Now(),
 	}
 
-	dummyEventRepository.Create(event)
+	eventRepository.Create(event)
 }
 
 func after() {
-	dummyEventRepository.Delete(evntUUID)
+	eventRepository.Delete(evntUUID)
 }
 
-func TestDummyEventRepository_Create(t *testing.T) {
+func TestEventRepository_Create(t *testing.T) {
 	event := repository.Event{
 		UUID:           1,
 		Title:          "Купить часы",
@@ -43,7 +43,7 @@ func TestDummyEventRepository_Create(t *testing.T) {
 		TimeSendNotify: time.Now(),
 	}
 
-	_, err := dummyEventRepository.Create(event)
+	_, err := eventRepository.Create(event)
 	if err != nil {
 		t.Error("Не должно быть ошибки при создании")
 	}
@@ -51,7 +51,7 @@ func TestDummyEventRepository_Create(t *testing.T) {
 	after()
 }
 
-func TestDummyEventRepository_Update(t *testing.T) {
+func TestEventRepository_Update(t *testing.T) {
 	before()
 
 	event := repository.Event{
@@ -64,12 +64,12 @@ func TestDummyEventRepository_Update(t *testing.T) {
 		TimeSendNotify: time.Now(),
 	}
 
-	_, err := dummyEventRepository.Update(evntUUID, event)
+	_, err := eventRepository.Update(evntUUID, event)
 	if err != nil {
 		t.Error("Не должно быть ошибки при обновлении")
 	}
 
-	_, err = dummyEventRepository.Update(22, event)
+	_, err = eventRepository.Update(22, event)
 	if err != repository.EventNotFountError {
 		t.Errorf("Ошибки должны совподать: %v - %v", err, repository.EventNotFountError)
 	}
@@ -77,24 +77,24 @@ func TestDummyEventRepository_Update(t *testing.T) {
 	after()
 }
 
-func TestDummyEventRepository_Delete(t *testing.T) {
+func TestEventRepository_Delete(t *testing.T) {
 	before()
 
-	err := dummyEventRepository.Delete(1)
+	err := eventRepository.Delete(1)
 	if err != nil {
 		t.Error("Не должно быть ошибки при удалении")
 	}
 
-	_, err = dummyEventRepository.FindByUUID(1)
+	_, err = eventRepository.FindByUUID(1)
 	if err != repository.EventNotFountError {
 		t.Errorf("Ошибки должны совподать: %v - %v", err, repository.EventNotFountError)
 	}
 }
 
-func TestDummyEventRepository_FindOnDay(t *testing.T) {
+func TestEventRepository_FindOnDay(t *testing.T) {
 	before()
 
-	eventList, err := dummyEventRepository.FindOnDay(time.Now())
+	eventList, err := eventRepository.FindOnDay(time.Now())
 	if err != nil {
 		t.Error("Не должно быть ошибки при обновлении")
 	}
@@ -106,10 +106,10 @@ func TestDummyEventRepository_FindOnDay(t *testing.T) {
 	after()
 }
 
-func TestDummyEventRepository_FindOnWeek(t *testing.T) {
+func TestEventRepository_FindOnWeek(t *testing.T) {
 	before()
 
-	eventList, err := dummyEventRepository.FindOnWeek(time.Now().Weekday())
+	eventList, err := eventRepository.FindOnWeek(time.Now().Weekday())
 	if err != nil {
 		t.Error("Не должно быть ошибки при обновлении")
 	}
@@ -121,10 +121,10 @@ func TestDummyEventRepository_FindOnWeek(t *testing.T) {
 	after()
 }
 
-func TestDummyEventRepository_FindOnMonth(t *testing.T) {
+func TestEventRepository_FindOnMonth(t *testing.T) {
 	before()
 
-	eventList, err := dummyEventRepository.FindOnMonth(time.Now().Month())
+	eventList, err := eventRepository.FindOnMonth(time.Now().Month())
 	if err != nil {
 		t.Error("Не должно быть ошибки при обновлении")
 	}

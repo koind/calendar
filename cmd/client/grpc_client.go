@@ -6,7 +6,7 @@ import (
 	"github.com/caarlos0/env"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/koind/calendar/app/config"
-	"github.com/koind/calendar/app/delivery/grpc/pb"
+	"github.com/koind/calendar/app/transport/grpc/pb"
 	"google.golang.org/grpc"
 	"log"
 	"time"

@@ -2,7 +2,7 @@ package server
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/koind/calendar/app/delivery/http/service"
+	"github.com/koind/calendar/app/transport/http/service"
 	"net/http"
 )
 

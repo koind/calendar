@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"github.com/caarlos0/env"
 	"github.com/koind/calendar/app/config"
-	httpServer "github.com/koind/calendar/app/delivery/http/server"
-	httpService "github.com/koind/calendar/app/delivery/http/service"
-	"github.com/koind/calendar/app/domain/mock"
 	"github.com/koind/calendar/app/domain/service"
+	"github.com/koind/calendar/app/storage/memory"
+	httpServer "github.com/koind/calendar/app/transport/http/server"
+	httpService "github.com/koind/calendar/app/transport/http/service"
 	"go.uber.org/zap"
 	"log"
 )
@@ -26,7 +26,7 @@ func main() {
 
 	calendarDomain := fmt.Sprintf("%s:%d", cfg.Host, cfg.Port)
 
-	eventService := service.NewEventService(mock.NewDummyEventRepository())
+	eventService := service.NewEventService(memory.NewEventRepository())
 	httpEventService := httpService.NewEventService(eventService, logger)
 	hs := httpServer.NewHTTPServer(httpEventService, calendarDomain)
 

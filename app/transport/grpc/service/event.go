@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 	"github.com/golang/protobuf/ptypes"
-	"github.com/koind/calendar/app/delivery/grpc/pb"
 	"github.com/koind/calendar/app/domain/repository"
 	"github.com/koind/calendar/app/domain/service"
+	"github.com/koind/calendar/app/transport/grpc/pb"
 )
 
 type EventServer struct {
