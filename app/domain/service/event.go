@@ -35,7 +35,7 @@ type EventService struct {
 func (service *EventService) FindByUUID(UUID int) (*repository.Event, error) {
 	event, err := service.eventRepository.FindByUUID(UUID)
 	if err != nil {
-		return nil, nil
+		return nil, err
 	}
 
 	return event, nil
