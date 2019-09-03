@@ -2,7 +2,7 @@ package adapter
 
 import (
 	"context"
-	_ "github.com/jackc/pgx"
+	_ "github.com/jackc/pgx/stdlib"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 	"time"
