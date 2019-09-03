@@ -4,3 +4,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    command: ["go", "run", "/calendar/cmd/server/http_server.go"]
+    ports:
+      - "7777:7777"
