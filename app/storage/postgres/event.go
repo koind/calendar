@@ -1,4 +1,4 @@
-package pg
+package postgres
 
 import (
 	"context"
@@ -13,6 +13,15 @@ import (
 const (
 	querySelectEventByUUID = "SELECT * FROM issues WHERE issue_id=$1"
 )
+
+// Конструктор репозитория событий
+func NewEventRepository(db *sqlx.DB, logger zap.Logger, ctx context.Context) *EventRepository {
+	return &EventRepository{
+		DB:     db,
+		logger: logger,
+		ctx:    ctx,
+	}
+}
 
 // PostgreSQL репозиторий события
 type EventRepository struct {

@@ -9,8 +9,9 @@ import (
 	"github.com/koind/calendar/app/transport/grpc/pb"
 )
 
+// GRPC-сервер событий
 type EventServer struct {
-	service.EventService
+	EventService service.EventServiceInterface
 }
 
 // Создает новое событие
