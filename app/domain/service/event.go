@@ -6,17 +6,17 @@ import (
 
 // Интерфейс сервиса событий
 type EventServiceInterface interface {
-	// Ищет событие оп UUID
-	FindByUUID(UUID int) (*repository.Event, error)
+	// Ищет событие оп ID
+	FindByID(ID int) (*repository.Event, error)
 
 	// Создает новое событие
 	Create(event repository.Event) (*repository.Event, error)
 
 	// Обновляет событие
-	Update(UUID int, event repository.Event) (*repository.Event, error)
+	Update(ID int, event repository.Event) (*repository.Event, error)
 
 	// Удаляет событие
-	Delete(UUID int) error
+	Delete(ID int) error
 }
 
 // Конструктор сервиса событий
@@ -31,9 +31,9 @@ type EventService struct {
 	eventRepository repository.EventRepositoryInterface
 }
 
-// Ищет событие оп UUID
-func (service *EventService) FindByUUID(UUID int) (*repository.Event, error) {
-	event, err := service.eventRepository.FindByUUID(UUID)
+// Ищет событие оп ID
+func (service *EventService) FindByID(ID int) (*repository.Event, error) {
+	event, err := service.eventRepository.FindByID(ID)
 	if err != nil {
 		return nil, err
 	}
@@ -52,8 +52,8 @@ func (service *EventService) Create(event repository.Event) (*repository.Event, 
 }
 
 // Обновляет событие
-func (service *EventService) Update(UUID int, event repository.Event) (*repository.Event, error) {
-	newEvent, err := service.eventRepository.Update(UUID, event)
+func (service *EventService) Update(ID int, event repository.Event) (*repository.Event, error) {
+	newEvent, err := service.eventRepository.Update(ID, event)
 	if err != nil {
 		return nil, err
 	}
@@ -62,8 +62,8 @@ func (service *EventService) Update(UUID int, event repository.Event) (*reposito
 }
 
 // Удаляет событие
-func (service *EventService) Delete(UUID int) error {
-	err := service.eventRepository.Delete(UUID)
+func (service *EventService) Delete(ID int) error {
+	err := service.eventRepository.Delete(ID)
 	if err != nil {
 		return err
 	}

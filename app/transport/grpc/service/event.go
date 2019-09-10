@@ -50,7 +50,7 @@ func (s *EventServer) Create(ctx context.Context, req *pb.EventRequest) (*pb.Eve
 	}
 
 	eventResp := &pb.EventResponse{
-		Uuid:           int32(event.UUID),
+		Id:             int32(event.ID),
 		Title:          event.Title,
 		Datetime:       req.GetDatetime(),
 		Duration:       req.GetDuration(),
@@ -67,7 +67,7 @@ func (s *EventServer) Update(ctx context.Context, eventChange *pb.EventChange) (
 		return nil, errors.New("client cancelled, abandoning.")
 	}
 
-	UUID := int(eventChange.GetEventID().GetUuid())
+	UUID := int(eventChange.GetEventID().GetId())
 	req := eventChange.GetRequest()
 
 	datetime, err := ptypes.Timestamp(req.GetDatetime())
@@ -100,7 +100,7 @@ func (s *EventServer) Update(ctx context.Context, eventChange *pb.EventChange) (
 	}
 
 	eventResp := &pb.EventResponse{
-		Uuid:           int32(event.UUID),
+		Id:             int32(event.ID),
 		Title:          event.Title,
 		Datetime:       req.GetDatetime(),
 		Duration:       req.GetDuration(),
@@ -117,7 +117,7 @@ func (s *EventServer) Delete(ctx context.Context, eventID *pb.EventID) (*pb.Even
 		return nil, errors.New("client cancelled, abandoning.")
 	}
 
-	UUID := int(eventID.GetUuid())
+	UUID := int(eventID.GetId())
 
 	err := s.EventService.Delete(UUID)
 	if err != nil {

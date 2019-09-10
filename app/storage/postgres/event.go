@@ -11,11 +11,13 @@ import (
 )
 
 const (
-	querySelectEventByUUID = "SELECT * FROM issues WHERE issue_id=$1"
+	querySelectEventByID = "SELECT * FROM events WHERE id=$1"
+	queryInsertEvent     = `INSERT INTO events(title, datetime, duration, description, user_id, time_send_notify)
+		VALUES (:title, :datetime, :duration, :description, :user_id, :time_send_notify)`
 )
 
 // Конструктор репозитория событий
-func NewEventRepository(db *sqlx.DB, logger zap.Logger, ctx context.Context) *EventRepository {
+func NewEventRepository(ctx context.Context, db *sqlx.DB, logger zap.Logger) *EventRepository {
 	return &EventRepository{
 		DB:     db,
 		logger: logger,
@@ -30,25 +32,25 @@ type EventRepository struct {
 	ctx    context.Context
 }
 
-// Ищет событие оп UUID
-func (r *EventRepository) FindByUUID(UUID int) (*repository.Event, error) {
+// Ищет событие оп ID
+func (r *EventRepository) FindByID(ID int) (*repository.Event, error) {
 	ctx, cancel := context.WithTimeout(r.ctx, time.Duration(30)*time.Millisecond)
 	defer cancel()
 
 	if ctx.Err() == context.Canceled {
 		r.logger.Info(
-			"Поиск события по UUID был прерван из-за отмены контекста",
-			zap.Int("UUID", UUID),
+			"Поиск события по ID был прерван из-за отмены контекста",
+			zap.Int("ID", ID),
 		)
 
-		return nil, errors.New("поиск события по UUID был прерван из-за отмены контекста")
+		return nil, errors.New("поиск события по ID был прерван из-за отмены контекста")
 	}
 
-	row := r.DB.QueryRowContext(ctx, querySelectEventByUUID, UUID)
+	row := r.DB.QueryRowContext(ctx, querySelectEventByID, ID)
 
 	event := repository.Event{}
 	err := row.Scan(
-		&event.UUID,
+		&event.ID,
 		&event.Title,
 		&event.Datetime,
 		&event.Duration,
@@ -59,47 +61,51 @@ func (r *EventRepository) FindByUUID(UUID int) (*repository.Event, error) {
 
 	if err != sql.ErrNoRows {
 		r.logger.Warn(
-			"Не удалось найти событие по UUID",
-			zap.Int("UUID", UUID),
+			"Не удалось найти событие по ID",
+			zap.Int("ID", ID),
 		)
 
-		return nil, errors.Wrap(err, "не удалось найти событие по UUID")
+		return nil, errors.Wrap(err, "не удалось найти событие по ID")
 	} else {
 		r.logger.Warn(
-			"Возникла ошибка при поиске события по UUID",
-			zap.Int("UUID", UUID),
+			"Возникла ошибка при поиске события по ID",
+			zap.Int("ID", ID),
 		)
 
-		return nil, errors.Wrap(err, "возникла ошибка при поиске события по UUID")
+		return nil, errors.Wrap(err, "возникла ошибка при поиске события по ID")
 	}
 }
 
 // Создает новое событие
 func (r *EventRepository) Create(event repository.Event) (*repository.Event, error) {
-	return nil, nil
+	res, err := r.DB.NamedExecContext(context.Background(), queryInsertEvent, map[string]interface{}{
+		":title":            event.Title,
+		":datetime":         event.Datetime,
+		":duration":         event.Duration,
+		":description":      event.Description,
+		":user_id":          event.UserId,
+		":time_send_notify": event.TimeSendNotify,
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, "ошибка во время создания нового события")
+	}
+
+	id, err := res.LastInsertId()
+	if err != nil {
+		return nil, errors.Wrap(err, "не удалось получить первичный ключ")
+	}
+
+	event.ID = int(id)
+
+	return &event, nil
 }
 
 // Обновляет событие
-func (r *EventRepository) Update(UUID int, event repository.Event) (*repository.Event, error) {
+func (r *EventRepository) Update(ID int, event repository.Event) (*repository.Event, error) {
 	return nil, nil
 }
 
 // Удаляет событие
-func (r *EventRepository) Delete(UUID int) error {
+func (r *EventRepository) Delete(ID int) error {
 	return nil
-}
-
-// Ищет события на день
-func (r *EventRepository) FindOnDay(day time.Time) ([]repository.Event, error) {
-	return nil, nil
-}
-
-// Ищет события на неделю
-func (r *EventRepository) FindOnWeek(week time.Weekday) ([]repository.Event, error) {
-	return nil, nil
-}
-
-// Ищет события на месяц
-func (r *EventRepository) FindOnMonth(month time.Month) ([]repository.Event, error) {
-	return nil, nil
 }

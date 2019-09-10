@@ -1,8 +1,78 @@
 package config
 
-type Config struct {
-	Host          string `env:"CALENDAR_HOST" envDefault:"0.0.0.0"`
-	Port          int    `env:"CALENDAR_PORT" envDefault:"7777"`
-	ClientTimeout int    `env:"CLIENT_TIMEOUT" envDefault:"400"`
-	DSN           string `evn:"DSN" envDefault:"postgres://root:123123@postgres:5432/events?sslmode=disable"`
+import (
+	"fmt"
+	"github.com/BurntSushi/toml"
+	"log"
+	"time"
+)
+
+// Путь до конфигураций
+var Path string
+
+// Настройки микросервиса
+type Options struct {
+	Postgres   Postgres
+	GRPCServer GRPCServer
+	HTTPServer HTTPServer
+	GRPCClient GRPCClient
+}
+
+// Инициализирует конфигурации микросервиса
+func Init(configPath string) Options {
+	opt := Options{}
+
+	if _, err := toml.DecodeFile(configPath, &opt); err != nil {
+		log.Fatal("Не удалось загрузить конфиги микросервиса ", err)
+	}
+
+	return opt
+}
+
+// Настройки postgres
+type Postgres struct {
+	DSN             string
+	PingTimeout     int
+	MaxOpenConns    int
+	MaxIdleConns    int
+	ConnMaxLifetime time.Duration
+}
+
+// Настройки gRPC сервера
+type GRPCServer struct {
+	Host string
+	Port int
+}
+
+// Возвращает домен
+func (s GRPCServer) GetDomain() string {
+	return fmt.Sprintf("%s:%d", s.Host, s.Port)
+}
+
+// Настройки HTTP сервера
+type HTTPServer struct {
+	Host string
+	Port int
+}
+
+// Возвращает домен
+func (s HTTPServer) GetDomain() string {
+	return fmt.Sprintf("%s:%d", s.Host, s.Port)
+}
+
+// Настройки gRPC клиента
+type GRPCClient struct {
+	Host    string
+	Port    int
+	Timeout int
+}
+
+// Возвращает домен
+func (c GRPCClient) GetDomain() string {
+	return fmt.Sprintf("%s:%d", c.Host, c.Port)
+}
+
+// Возвращает таймаут
+func (c GRPCClient) GetTimeout() time.Duration {
+	return time.Duration(c.Timeout) * time.Millisecond
 }

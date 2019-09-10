@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-const evntUUID = 1
+const evntID = 1
 
 var eventRepository repository.EventRepositoryInterface
 
@@ -16,7 +16,7 @@ func init() {
 
 func before() {
 	event := repository.Event{
-		UUID:           1,
+		ID:             1,
 		Title:          "Купить часы",
 		Datetime:       time.Now(),
 		Duration:       time.Second * 5,
@@ -29,12 +29,12 @@ func before() {
 }
 
 func after() {
-	eventRepository.Delete(evntUUID)
+	eventRepository.Delete(evntID)
 }
 
 func TestEventRepository_Create(t *testing.T) {
 	event := repository.Event{
-		UUID:           1,
+		ID:             1,
 		Title:          "Купить часы",
 		Datetime:       time.Now(),
 		Duration:       time.Second * 5,
@@ -55,7 +55,7 @@ func TestEventRepository_Update(t *testing.T) {
 	before()
 
 	event := repository.Event{
-		UUID:           1,
+		ID:             1,
 		Title:          "Купить Rolex",
 		Datetime:       time.Now(),
 		Duration:       time.Second * 5,
@@ -64,7 +64,7 @@ func TestEventRepository_Update(t *testing.T) {
 		TimeSendNotify: time.Now(),
 	}
 
-	_, err := eventRepository.Update(evntUUID, event)
+	_, err := eventRepository.Update(evntID, event)
 	if err != nil {
 		t.Error("Не должно быть ошибки при обновлении")
 	}
@@ -85,7 +85,7 @@ func TestEventRepository_Delete(t *testing.T) {
 		t.Error("Не должно быть ошибки при удалении")
 	}
 
-	_, err = eventRepository.FindByUUID(1)
+	_, err = eventRepository.FindByID(1)
 	if err != repository.EventNotFountError {
 		t.Errorf("Ошибки должны совподать: %v - %v", err, repository.EventNotFountError)
 	}

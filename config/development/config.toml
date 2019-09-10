@@ -1,0 +1,19 @@
+[GRPCServer]
+Host = "0.0.0.0"
+Port = 7777
+
+[HTTPServer]
+Host = "0.0.0.0"
+Port = 7766
+
+[Postgres]
+DSN = "postgres://root:123123@postgres:5432/events?sslmode=disable"
+PingTimeout = 430
+MaxOpenConns = 10
+MaxIdleConns = 5
+ConnMaxLifetime = 15
+
+[GRPCClient]
+Host = "0.0.0.0"
+Port = 8888
+Timeout = 400

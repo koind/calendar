@@ -17,7 +17,7 @@ message EventRequest {
 }
 
 message EventResponse {
-    int32 uuid = 1;
+    int32 id = 1;
     string title = 2;
     google.protobuf.Timestamp datetime = 3;
     google.protobuf.Duration duration = 4;
@@ -27,7 +27,7 @@ message EventResponse {
 }
 
 message EventID {
-    int32 uuid = 1;
+    int32 id = 1;
 }
 
 message EventStatus {

@@ -18,12 +18,12 @@ type EventRepository struct {
 	DB map[int]repository.Event
 }
 
-// Ищет событие оп UUID
-func (r *EventRepository) FindByUUID(UUID int) (*repository.Event, error) {
+// Ищет событие оп ID
+func (r *EventRepository) FindByID(ID int) (*repository.Event, error) {
 	r.RLock()
 	defer r.RUnlock()
 
-	event, has := r.DB[UUID]
+	event, has := r.DB[ID]
 	if !has {
 		return nil, repository.EventNotFountError
 	}
@@ -36,14 +36,14 @@ func (r *EventRepository) Create(event repository.Event) (*repository.Event, err
 	r.Lock()
 	defer r.Unlock()
 
-	r.DB[event.UUID] = event
+	r.DB[event.ID] = event
 
 	return &event, nil
 }
 
 // Обновляет событие
-func (r *EventRepository) Update(UUID int, event repository.Event) (*repository.Event, error) {
-	_, err := r.FindByUUID(UUID)
+func (r *EventRepository) Update(ID int, event repository.Event) (*repository.Event, error) {
+	_, err := r.FindByID(ID)
 	if err != nil {
 		return nil, err
 	}
@@ -51,14 +51,14 @@ func (r *EventRepository) Update(UUID int, event repository.Event) (*repository.
 	r.Lock()
 	defer r.Unlock()
 
-	r.DB[UUID] = event
+	r.DB[ID] = event
 
 	return &event, nil
 }
 
 // Удаляет событие
-func (r *EventRepository) Delete(UUID int) error {
-	_, err := r.FindByUUID(UUID)
+func (r *EventRepository) Delete(ID int) error {
+	_, err := r.FindByID(ID)
 	if err != nil {
 		return err
 	}
@@ -66,7 +66,7 @@ func (r *EventRepository) Delete(UUID int) error {
 	r.Lock()
 	defer r.Unlock()
 
-	delete(r.DB, UUID)
+	delete(r.DB, ID)
 
 	return nil
 }

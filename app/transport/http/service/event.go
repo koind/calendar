@@ -82,7 +82,7 @@ func (service *EventService) UpdateHandle(w http.ResponseWriter, r *http.Request
 		} else {
 			service.logger.Info(
 				"Данные события обновлены",
-				zap.Int("UUID", uuid),
+				zap.Int("ID", uuid),
 				zap.Any("event", newEvent),
 			)
 
@@ -115,7 +115,7 @@ func (service *EventService) DeleteHandle(w http.ResponseWriter, r *http.Request
 		} else {
 			service.logger.Info(
 				"Событие было удалено",
-				zap.Int("UUID", uuid),
+				zap.Int("ID", uuid),
 			)
 
 			w.Write([]byte("ok"))

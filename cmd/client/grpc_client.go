@@ -2,32 +2,33 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"github.com/caarlos0/env"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/koind/calendar/app/config"
 	"github.com/koind/calendar/app/transport/grpc/pb"
+	flag "github.com/spf13/pflag"
 	"google.golang.org/grpc"
 	"log"
 	"time"
 )
 
 func main() {
-	cfg := config.Config{}
-	if err := env.Parse(&cfg); err != nil {
-		log.Fatal(err)
-	}
+	flag.StringVarP(
+		&config.Path,
+		"config",
+		"c",
+		"config/development/config.toml",
+		"Путь до конфигурационного toml файла",
+	)
 
-	timeout := time.Duration(cfg.ClientTimeout) * time.Millisecond
-	calendarDomain := fmt.Sprintf("%s:%d", cfg.Host, cfg.Port)
-	clientConn, err := grpc.Dial(calendarDomain, grpc.WithInsecure())
+	cfg := config.Init(config.Path)
+	clientConn, err := grpc.Dial(cfg.GRPCClient.GetDomain(), grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("could not connect: %v", err)
 	}
 	defer clientConn.Close()
 
 	client := pb.NewEventClient(clientConn)
-	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	ctx, cancel := context.WithTimeout(context.Background(), cfg.GRPCClient.GetTimeout())
 	defer cancel()
 
 	timestamp, err := ptypes.TimestampProto(time.Now())
@@ -57,7 +58,7 @@ func main() {
 
 	event := &pb.EventChange{
 		EventID: &pb.EventID{
-			Uuid: response.Uuid,
+			Id: response.Id,
 		},
 		Request: &pb.EventRequest{Title: "Buy Audi RS6"},
 	}
@@ -68,7 +69,7 @@ func main() {
 	log.Printf("%+v", response)
 
 	eventID := &pb.EventID{
-		Uuid: response.Uuid,
+		Id: response.Id,
 	}
 	status, err := client.Delete(ctx, eventID)
 	if err != nil {
