@@ -109,3 +109,18 @@ func (r *EventRepository) Update(ID int, event repository.Event) (*repository.Ev
 func (r *EventRepository) Delete(ID int) error {
 	return nil
 }
+
+// Ищет события на день
+func (r *EventRepository) FindOnDay(day time.Time) ([]repository.Event, error) {
+	return nil, nil
+}
+
+// Ищет события на неделю
+func (r *EventRepository) FindOnWeek(week time.Weekday) ([]repository.Event, error) {
+	return nil, nil
+}
+
+// Ищет события на месяц
+func (r *EventRepository) FindOnMonth(month time.Month) ([]repository.Event, error) {
+	return nil, nil
+}
