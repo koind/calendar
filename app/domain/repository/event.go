@@ -31,10 +31,7 @@ type EventRepositoryInterface interface {
 
 	// Удаляет событие
 	Delete(ID int) error
-}
 
-// Интерфейс поиска событий
-type EventFindRepositoryInterface interface {
 	// Ищет события на день
 	FindOnDay(day time.Time) ([]Event, error)
 
