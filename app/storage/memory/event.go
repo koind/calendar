@@ -1,9 +1,9 @@
 package memory
 
 import (
+	"context"
 	"github.com/koind/calendar/app/domain/repository"
 	"sync"
-	"time"
 )
 
 func NewEventRepository() *EventRepository {
@@ -19,7 +19,7 @@ type EventRepository struct {
 }
 
 // Ищет событие оп ID
-func (r *EventRepository) FindByID(ID int) (*repository.Event, error) {
+func (r *EventRepository) FindByID(ctx context.Context, ID int) (*repository.Event, error) {
 	r.RLock()
 	defer r.RUnlock()
 
@@ -32,7 +32,7 @@ func (r *EventRepository) FindByID(ID int) (*repository.Event, error) {
 }
 
 // Создает новое событие
-func (r *EventRepository) Create(event repository.Event) (*repository.Event, error) {
+func (r *EventRepository) Create(ctx context.Context, event repository.Event) (*repository.Event, error) {
 	r.Lock()
 	defer r.Unlock()
 
@@ -42,8 +42,8 @@ func (r *EventRepository) Create(event repository.Event) (*repository.Event, err
 }
 
 // Обновляет событие
-func (r *EventRepository) Update(ID int, event repository.Event) (*repository.Event, error) {
-	_, err := r.FindByID(ID)
+func (r *EventRepository) Update(ctx context.Context, ID int, event repository.Event) (*repository.Event, error) {
+	_, err := r.FindByID(ctx, ID)
 	if err != nil {
 		return nil, err
 	}
@@ -57,8 +57,8 @@ func (r *EventRepository) Update(ID int, event repository.Event) (*repository.Ev
 }
 
 // Удаляет событие
-func (r *EventRepository) Delete(ID int) error {
-	_, err := r.FindByID(ID)
+func (r *EventRepository) Delete(ctx context.Context, ID int) error {
+	_, err := r.FindByID(ctx, ID)
 	if err != nil {
 		return err
 	}
@@ -69,61 +69,4 @@ func (r *EventRepository) Delete(ID int) error {
 	delete(r.DB, ID)
 
 	return nil
-}
-
-// Ищет события на день
-func (r *EventRepository) FindOnDay(day time.Time) ([]repository.Event, error) {
-	r.RLock()
-	defer r.RUnlock()
-
-	eventList := make([]repository.Event, 0, 0)
-	for _, even := range r.DB {
-		if even.Datetime.Day() == day.Day() {
-			eventList = append(eventList, even)
-		}
-	}
-
-	if len(eventList) > 0 {
-		return eventList, nil
-	}
-
-	return nil, nil
-}
-
-// Ищет события на неделю
-func (r *EventRepository) FindOnWeek(week time.Weekday) ([]repository.Event, error) {
-	r.RLock()
-	defer r.RUnlock()
-
-	eventList := make([]repository.Event, 0, 0)
-	for _, even := range r.DB {
-		if even.Datetime.Weekday() == week {
-			eventList = append(eventList, even)
-		}
-	}
-
-	if len(eventList) > 0 {
-		return eventList, nil
-	}
-
-	return nil, nil
-}
-
-// Ищет события на месяц
-func (r *EventRepository) FindOnMonth(month time.Month) ([]repository.Event, error) {
-	r.RLock()
-	defer r.RUnlock()
-
-	eventList := make([]repository.Event, 0, 0)
-	for _, even := range r.DB {
-		if even.Datetime.Month() == month {
-			eventList = append(eventList, even)
-		}
-	}
-
-	if len(eventList) > 0 {
-		return eventList, nil
-	}
-
-	return nil, nil
 }

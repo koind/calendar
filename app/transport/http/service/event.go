@@ -34,7 +34,7 @@ func (service *EventService) CreateHandle(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(400)
 	}
 
-	newEvent, err := service.Create(event)
+	newEvent, err := service.Create(r.Context(), event)
 	if err != nil {
 		service.logger.Error(
 			"Во время создания события возникла ошибка",
@@ -71,7 +71,7 @@ func (service *EventService) UpdateHandle(w http.ResponseWriter, r *http.Request
 			w.WriteHeader(400)
 		}
 
-		newEvent, err := service.Update(uuid, event)
+		newEvent, err := service.Update(r.Context(), uuid, event)
 		if err != nil {
 			service.logger.Error(
 				"Во время обновления данных события возникла ошибка",
@@ -104,7 +104,7 @@ func (service *EventService) DeleteHandle(w http.ResponseWriter, r *http.Request
 			return
 		}
 
-		err = service.Delete(uuid)
+		err = service.Delete(r.Context(), uuid)
 		if err != nil {
 			service.logger.Error(
 				"Во время удаления события возникла ошибка",

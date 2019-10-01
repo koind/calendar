@@ -1,7 +1,9 @@
 package memory
 
 import (
+	"context"
 	"github.com/koind/calendar/app/domain/repository"
+	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
 )
@@ -16,7 +18,7 @@ func init() {
 
 func before() {
 	event := repository.Event{
-		ID:             1,
+		ID:             evntID,
 		Title:          "Купить часы",
 		Datetime:       time.Now(),
 		Duration:       time.Second * 5,
@@ -25,16 +27,16 @@ func before() {
 		TimeSendNotify: time.Now(),
 	}
 
-	eventRepository.Create(event)
+	eventRepository.Create(context.Background(), event)
 }
 
 func after() {
-	eventRepository.Delete(evntID)
+	eventRepository.Delete(context.Background(), evntID)
 }
 
 func TestEventRepository_Create(t *testing.T) {
 	event := repository.Event{
-		ID:             1,
+		ID:             evntID,
 		Title:          "Купить часы",
 		Datetime:       time.Now(),
 		Duration:       time.Second * 5,
@@ -43,10 +45,9 @@ func TestEventRepository_Create(t *testing.T) {
 		TimeSendNotify: time.Now(),
 	}
 
-	_, err := eventRepository.Create(event)
-	if err != nil {
-		t.Error("Не должно быть ошибки при создании")
-	}
+	_, err := eventRepository.Create(context.Background(), event)
+
+	assert.Nil(t, err, "не должно быть ошибки при создании")
 
 	after()
 }
@@ -55,7 +56,7 @@ func TestEventRepository_Update(t *testing.T) {
 	before()
 
 	event := repository.Event{
-		ID:             1,
+		ID:             evntID,
 		Title:          "Купить Rolex",
 		Datetime:       time.Now(),
 		Duration:       time.Second * 5,
@@ -64,14 +65,12 @@ func TestEventRepository_Update(t *testing.T) {
 		TimeSendNotify: time.Now(),
 	}
 
-	_, err := eventRepository.Update(evntID, event)
-	if err != nil {
-		t.Error("Не должно быть ошибки при обновлении")
-	}
+	_, err := eventRepository.Update(context.Background(), evntID, event)
+	assert.Nil(t, err, "не должно быть ошибки при обновлении")
 
-	_, err = eventRepository.Update(22, event)
-	if err != repository.EventNotFountError {
-		t.Errorf("Ошибки должны совподать: %v - %v", err, repository.EventNotFountError)
+	_, err = eventRepository.Update(context.Background(), 22, event)
+	if assert.NotNil(t, err) {
+		assert.EqualError(t, err, repository.EventNotFountError.Error(), "ошибки должны совподать")
 	}
 
 	after()
@@ -80,58 +79,25 @@ func TestEventRepository_Update(t *testing.T) {
 func TestEventRepository_Delete(t *testing.T) {
 	before()
 
-	err := eventRepository.Delete(1)
-	if err != nil {
-		t.Error("Не должно быть ошибки при удалении")
-	}
+	err := eventRepository.Delete(context.Background(), evntID)
+	assert.Nil(t, err, "не должно быть ошибки при удалении")
 
-	_, err = eventRepository.FindByID(1)
-	if err != repository.EventNotFountError {
-		t.Errorf("Ошибки должны совподать: %v - %v", err, repository.EventNotFountError)
+	_, err = eventRepository.FindByID(context.Background(), evntID)
+	if assert.NotNil(t, err) {
+		assert.EqualError(t, err, repository.EventNotFountError.Error(), "ошибки должны совподать")
 	}
 }
 
-func TestEventRepository_FindOnDay(t *testing.T) {
+func TestEventRepository_FindByID(t *testing.T) {
 	before()
 
-	eventList, err := eventRepository.FindOnDay(time.Now())
-	if err != nil {
-		t.Error("Не должно быть ошибки при обновлении")
-	}
-
-	if len(eventList) != 1 {
-		t.Errorf("Количество событий должно совпадать: %v - %v", len(eventList), 1)
-	}
+	_, err := eventRepository.FindByID(context.Background(), evntID)
+	assert.Nil(t, err, "не должно быть ошибки при удалении")
 
 	after()
-}
 
-func TestEventRepository_FindOnWeek(t *testing.T) {
-	before()
-
-	eventList, err := eventRepository.FindOnWeek(time.Now().Weekday())
-	if err != nil {
-		t.Error("Не должно быть ошибки при обновлении")
+	_, err = eventRepository.FindByID(context.Background(), evntID)
+	if assert.NotNil(t, err) {
+		assert.EqualError(t, err, repository.EventNotFountError.Error(), "ошибки должны совподать")
 	}
-
-	if len(eventList) != 1 {
-		t.Errorf("Количество событий должно совпадать: %v - %v", len(eventList), 1)
-	}
-
-	after()
-}
-
-func TestEventRepository_FindOnMonth(t *testing.T) {
-	before()
-
-	eventList, err := eventRepository.FindOnMonth(time.Now().Month())
-	if err != nil {
-		t.Error("Не должно быть ошибки при обновлении")
-	}
-
-	if len(eventList) != 1 {
-		t.Errorf("Количество событий должно совпадать: %v - %v", len(eventList), 1)
-	}
-
-	after()
 }

@@ -44,7 +44,7 @@ func (s *EventServer) Create(ctx context.Context, req *pb.EventRequest) (*pb.Eve
 		TimeSendNotify: timeSendNotify,
 	}
 
-	event, err := s.EventService.Create(newEvent)
+	event, err := s.EventService.Create(ctx, newEvent)
 	if err != nil {
 		return nil, err
 	}
@@ -67,34 +67,26 @@ func (s *EventServer) Update(ctx context.Context, eventChange *pb.EventChange) (
 		return nil, errors.New("client cancelled, abandoning.")
 	}
 
-	UUID := int(eventChange.GetEventID().GetId())
-	req := eventChange.GetRequest()
-
-	datetime, err := ptypes.Timestamp(req.GetDatetime())
-	if err != nil {
-		return nil, err
-	}
-
-	duration, err := ptypes.Duration(req.GetDuration())
-	if err != nil {
-		return nil, err
-	}
-
-	timeSendNotify, err := ptypes.Timestamp(req.GetDatetime())
-	if err != nil {
-		return nil, err
-	}
+	eventID := int(eventChange.GetEventID().GetId())
+	newTitle := eventChange.GetTitle()
 
 	newEvent := repository.Event{
-		Title:          req.GetTitle(),
-		Datetime:       datetime,
-		Duration:       duration,
-		Description:    req.GetDescription(),
-		UserId:         int(req.GetUserId()),
-		TimeSendNotify: timeSendNotify,
+		Title: newTitle,
 	}
 
-	event, err := s.EventService.Update(UUID, newEvent)
+	event, err := s.EventService.Update(ctx, eventID, newEvent)
+	if err != nil {
+		return nil, err
+	}
+
+	datetime, err := ptypes.TimestampProto(event.Datetime)
+	if err != nil {
+		return nil, err
+	}
+
+	duration := ptypes.DurationProto(event.Duration)
+
+	timeSendNotify, err := ptypes.TimestampProto(event.TimeSendNotify)
 	if err != nil {
 		return nil, err
 	}
@@ -102,10 +94,10 @@ func (s *EventServer) Update(ctx context.Context, eventChange *pb.EventChange) (
 	eventResp := &pb.EventResponse{
 		Id:             int32(event.ID),
 		Title:          event.Title,
-		Datetime:       req.GetDatetime(),
-		Duration:       req.GetDuration(),
-		UserId:         req.GetUserId(),
-		TimeSendNotify: req.GetTimeSendNotify(),
+		Datetime:       datetime,
+		Duration:       duration,
+		UserId:         int32(event.ID),
+		TimeSendNotify: timeSendNotify,
 	}
 
 	return eventResp, nil
@@ -117,9 +109,9 @@ func (s *EventServer) Delete(ctx context.Context, eventID *pb.EventID) (*pb.Even
 		return nil, errors.New("client cancelled, abandoning.")
 	}
 
-	UUID := int(eventID.GetId())
+	ID := int(eventID.GetId())
 
-	err := s.EventService.Delete(UUID)
+	err := s.EventService.Delete(ctx, ID)
 	if err != nil {
 		return nil, err
 	}

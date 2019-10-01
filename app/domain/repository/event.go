@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"errors"
 	"time"
 )
@@ -21,23 +22,14 @@ type Event struct {
 // Интерфейс репозитория событий
 type EventRepositoryInterface interface {
 	// Ищет событие оп ID
-	FindByID(ID int) (*Event, error)
+	FindByID(ctx context.Context, ID int) (*Event, error)
 
 	// Создает новое событие
-	Create(event Event) (*Event, error)
+	Create(ctx context.Context, event Event) (*Event, error)
 
 	// Обновляет событие
-	Update(ID int, event Event) (*Event, error)
+	Update(ctx context.Context, ID int, event Event) (*Event, error)
 
 	// Удаляет событие
-	Delete(ID int) error
-
-	// Ищет события на день
-	FindOnDay(day time.Time) ([]Event, error)
-
-	// Ищет события на неделю
-	FindOnWeek(week time.Weekday) ([]Event, error)
-
-	// Ищет события на месяц
-	FindOnMonth(month time.Month) ([]Event, error)
+	Delete(ctx context.Context, ID int) error
 }

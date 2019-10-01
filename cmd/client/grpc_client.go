@@ -60,7 +60,7 @@ func main() {
 		EventID: &pb.EventID{
 			Id: response.Id,
 		},
-		Request: &pb.EventRequest{Title: "Buy Audi RS6"},
+		Title: "Buy Audi RS6",
 	}
 	response, err = client.Update(ctx, event)
 	if err != nil {

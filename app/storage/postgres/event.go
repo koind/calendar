@@ -7,13 +7,14 @@ import (
 	"github.com/koind/calendar/app/domain/repository"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
-	"time"
 )
 
 const (
-	querySelectEventByID = "SELECT * FROM events WHERE id=$1"
+	querySelectEventByID = `SELECT * FROM events WHERE id=$1`
 	queryInsertEvent     = `INSERT INTO events(title, datetime, duration, description, user_id, time_send_notify)
-		VALUES (:title, :datetime, :duration, :description, :user_id, :time_send_notify)`
+		VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`
+	queryUpdateEventByID = `UPDATE events SET title=$1 WHERE id=$2`
+	queryDeleteEventByID = `DELETE FROM events WHERE id=$1`
 )
 
 // Конструктор репозитория событий
@@ -33,10 +34,7 @@ type EventRepository struct {
 }
 
 // Ищет событие оп ID
-func (r *EventRepository) FindByID(ID int) (*repository.Event, error) {
-	ctx, cancel := context.WithTimeout(r.ctx, time.Duration(30)*time.Millisecond)
-	defer cancel()
-
+func (r *EventRepository) FindByID(ctx context.Context, ID int) (*repository.Event, error) {
 	if ctx.Err() == context.Canceled {
 		r.logger.Info(
 			"Поиск события по ID был прерван из-за отмены контекста",
@@ -46,9 +44,9 @@ func (r *EventRepository) FindByID(ID int) (*repository.Event, error) {
 		return nil, errors.New("поиск события по ID был прерван из-за отмены контекста")
 	}
 
-	row := r.DB.QueryRowContext(ctx, querySelectEventByID, ID)
+	row := r.DB.QueryRowContext(context.Background(), querySelectEventByID, ID)
 
-	event := repository.Event{}
+	event := new(repository.Event)
 	err := row.Scan(
 		&event.ID,
 		&event.Title,
@@ -59,68 +57,93 @@ func (r *EventRepository) FindByID(ID int) (*repository.Event, error) {
 		&event.TimeSendNotify,
 	)
 
-	if err != sql.ErrNoRows {
+	if err == sql.ErrNoRows {
 		r.logger.Warn(
 			"Не удалось найти событие по ID",
 			zap.Int("ID", ID),
 		)
 
 		return nil, errors.Wrap(err, "не удалось найти событие по ID")
-	} else {
+	} else if err != nil {
 		r.logger.Warn(
 			"Возникла ошибка при поиске события по ID",
+			zap.Error(err),
 			zap.Int("ID", ID),
 		)
 
 		return nil, errors.Wrap(err, "возникла ошибка при поиске события по ID")
 	}
+
+	return event, nil
 }
 
 // Создает новое событие
-func (r *EventRepository) Create(event repository.Event) (*repository.Event, error) {
-	res, err := r.DB.NamedExecContext(context.Background(), queryInsertEvent, map[string]interface{}{
-		":title":            event.Title,
-		":datetime":         event.Datetime,
-		":duration":         event.Duration,
-		":description":      event.Description,
-		":user_id":          event.UserId,
-		":time_send_notify": event.TimeSendNotify,
-	})
+func (r *EventRepository) Create(ctx context.Context, event repository.Event) (*repository.Event, error) {
+	if ctx.Err() == context.Canceled {
+		r.logger.Info(
+			"Создание нового события было прервано из-за отмены контекста",
+			zap.Int("ID", event.ID),
+		)
+
+		return nil, errors.New("создание нового события было прервано из-за отмены контекста")
+	}
+
+	err := r.DB.QueryRowContext(
+		context.Background(),
+		queryInsertEvent,
+		event.Title,
+		event.Datetime,
+		event.Duration,
+		event.Description,
+		event.UserId,
+		event.TimeSendNotify,
+	).Scan(&event.ID)
 	if err != nil {
 		return nil, errors.Wrap(err, "ошибка во время создания нового события")
 	}
-
-	id, err := res.LastInsertId()
-	if err != nil {
-		return nil, errors.Wrap(err, "не удалось получить первичный ключ")
-	}
-
-	event.ID = int(id)
 
 	return &event, nil
 }
 
 // Обновляет событие
-func (r *EventRepository) Update(ID int, event repository.Event) (*repository.Event, error) {
-	return nil, nil
+func (r *EventRepository) Update(ctx context.Context, ID int, event repository.Event) (*repository.Event, error) {
+	if ctx.Err() == context.Canceled {
+		r.logger.Info(
+			"Обновление события было прервано из-за отмены контекста",
+			zap.Int("ID", ID),
+		)
+
+		return nil, errors.New("обновление события было прервано из-за отмены контекста")
+	}
+
+	_, err := r.DB.ExecContext(context.Background(), queryUpdateEventByID, event.Title, ID)
+	if err != nil {
+		return nil, errors.Wrap(err, "ошибка во время обновления события")
+	}
+
+	newEvent, err := r.FindByID(ctx, ID)
+	if err != nil {
+		return nil, err
+	}
+
+	return newEvent, nil
 }
 
 // Удаляет событие
-func (r *EventRepository) Delete(ID int) error {
+func (r *EventRepository) Delete(ctx context.Context, ID int) error {
+	if ctx.Err() == context.Canceled {
+		r.logger.Info(
+			"Удаление события было прервано из-за отмены контекста",
+			zap.Int("ID", ID),
+		)
+
+		return errors.New("Удаление события было прервано из-за отмены контекста")
+	}
+
+	_, err := r.DB.ExecContext(context.Background(), queryDeleteEventByID, ID)
+	if err != nil {
+		return errors.Wrap(err, "ошибка во время удаления события")
+	}
+
 	return nil
-}
-
-// Ищет события на день
-func (r *EventRepository) FindOnDay(day time.Time) ([]repository.Event, error) {
-	return nil, nil
-}
-
-// Ищет события на неделю
-func (r *EventRepository) FindOnWeek(week time.Weekday) ([]repository.Event, error) {
-	return nil, nil
-}
-
-// Ищет события на месяц
-func (r *EventRepository) FindOnMonth(month time.Month) ([]repository.Event, error) {
-	return nil, nil
 }

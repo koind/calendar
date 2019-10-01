@@ -36,7 +36,7 @@ message EventStatus {
 
 message EventChange {
     EventID eventID = 1;
-    EventRequest request = 2;
+    string title = 2;
 }
 
 // grpc-сервис

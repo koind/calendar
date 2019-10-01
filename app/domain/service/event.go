@@ -1,22 +1,20 @@
 package service
 
 import (
+	"context"
 	"github.com/koind/calendar/app/domain/repository"
 )
 
 // Интерфейс сервиса событий
 type EventServiceInterface interface {
-	// Ищет событие оп ID
-	FindByID(ID int) (*repository.Event, error)
-
 	// Создает новое событие
-	Create(event repository.Event) (*repository.Event, error)
+	Create(ctx context.Context, event repository.Event) (*repository.Event, error)
 
 	// Обновляет событие
-	Update(ID int, event repository.Event) (*repository.Event, error)
+	Update(ctx context.Context, ID int, event repository.Event) (*repository.Event, error)
 
 	// Удаляет событие
-	Delete(ID int) error
+	Delete(ctx context.Context, ID int) error
 }
 
 // Конструктор сервиса событий
@@ -31,19 +29,9 @@ type EventService struct {
 	eventRepository repository.EventRepositoryInterface
 }
 
-// Ищет событие оп ID
-func (service *EventService) FindByID(ID int) (*repository.Event, error) {
-	event, err := service.eventRepository.FindByID(ID)
-	if err != nil {
-		return nil, err
-	}
-
-	return event, nil
-}
-
 // Создает новое событие
-func (service *EventService) Create(event repository.Event) (*repository.Event, error) {
-	newEvent, err := service.eventRepository.Create(event)
+func (service *EventService) Create(ctx context.Context, event repository.Event) (*repository.Event, error) {
+	newEvent, err := service.eventRepository.Create(ctx, event)
 	if err != nil {
 		return nil, err
 	}
@@ -52,8 +40,8 @@ func (service *EventService) Create(event repository.Event) (*repository.Event, 
 }
 
 // Обновляет событие
-func (service *EventService) Update(ID int, event repository.Event) (*repository.Event, error) {
-	newEvent, err := service.eventRepository.Update(ID, event)
+func (service *EventService) Update(ctx context.Context, ID int, event repository.Event) (*repository.Event, error) {
+	newEvent, err := service.eventRepository.Update(ctx, ID, event)
 	if err != nil {
 		return nil, err
 	}
@@ -62,8 +50,8 @@ func (service *EventService) Update(ID int, event repository.Event) (*repository
 }
 
 // Удаляет событие
-func (service *EventService) Delete(ID int) error {
-	err := service.eventRepository.Delete(ID)
+func (service *EventService) Delete(ctx context.Context, ID int) error {
+	err := service.eventRepository.Delete(ctx, ID)
 	if err != nil {
 		return err
 	}
