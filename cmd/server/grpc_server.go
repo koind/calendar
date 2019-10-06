@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"github.com/koind/calendar/app/adapter"
 	"github.com/koind/calendar/app/config"
+	"github.com/koind/calendar/app/db"
 	domain "github.com/koind/calendar/app/domain/service"
 	"github.com/koind/calendar/app/storage/postgres"
 	"github.com/koind/calendar/app/transport/grpc/pb"
@@ -14,6 +14,7 @@ import (
 	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
+	"time"
 )
 
 func main() {
@@ -38,12 +39,18 @@ func main() {
 		log.Fatalf("failed to listen %v", err)
 	}
 
-	db, err := adapter.IntPostgres(cfg.Postgres)
+	ctx, cancel := context.WithTimeout(
+		context.Background(),
+		time.Duration(cfg.Postgres.PingTimeout)*time.Millisecond,
+	)
+	defer cancel()
+
+	pg, err := db.IntPostgres(ctx, cfg.Postgres)
 	if err != nil {
 		log.Fatalf("failing to connect to the database %v", err)
 	}
 
-	eventRepository := postgres.NewEventRepository(context.Background(), db, *logger)
+	eventRepository := postgres.NewEventRepository(context.Background(), pg, *logger)
 	eventService := domain.NewEventService(eventRepository)
 	eventServer := &service.EventServer{
 		EventService: eventService,
