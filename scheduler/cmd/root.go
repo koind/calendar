@@ -38,7 +38,7 @@ var rootCmd = &cobra.Command{
 			for {
 				select {
 				case <-ticker.C:
-					err = internal.Run(ctx, db, *conn)
+					err = internal.Run(context.Background(), db, *conn)
 					if err != nil {
 						log.Println(err)
 					}
