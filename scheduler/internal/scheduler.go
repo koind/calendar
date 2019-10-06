@@ -19,7 +19,7 @@ func Run(ctx context.Context, db *sqlx.DB, conn amqp.Connection) error {
 		return nil
 	}
 
-	if err := SendNotify(ctx, conn, events); err != nil {
+	if err := SendMessagesToQueue(ctx, conn, events); err != nil {
 		return err
 	}
 

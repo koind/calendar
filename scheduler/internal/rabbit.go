@@ -7,8 +7,8 @@ import (
 	"github.com/streadway/amqp"
 )
 
-// Отправляет уведомления
-func SendNotify(ctx context.Context, conn amqp.Connection, events []Event) error {
+// Отправляет сообщения в очередь
+func SendMessagesToQueue(ctx context.Context, conn amqp.Connection, events []Event) error {
 	if ctx.Err() == context.Canceled {
 		return errors.New("отправка уведомлений было прервано из-за отмены контекста")
 	}
