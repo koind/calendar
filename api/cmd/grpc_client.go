@@ -63,14 +63,14 @@ var GrpcClientCmd = &cobra.Command{
 		}
 		log.Printf("%+v", response)
 
-		eventID := &pb.EventID{
+		/*eventID := &pb.EventID{
 			Id: response.Id,
 		}
 		status, err := client.Delete(ctx, eventID)
 		if err != nil {
 			log.Print(err)
 		}
-		log.Println(status.Status)
+		log.Println(status.Status)*/
 	},
 }
 

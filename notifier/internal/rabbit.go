@@ -19,19 +19,6 @@ func ProcessMessagesFromQueue(ctx context.Context, conn amqp.Connection) error {
 	}
 	defer ch.Close()
 
-	err = ch.ExchangeDeclare(
-		"notify_about_event", // name
-		"direct",             // type
-		true,                 // durable
-		false,                // auto-deleted
-		false,                // internal
-		false,                // no-wait
-		nil,                  // arguments
-	)
-	if err != nil {
-		return errors.Wrap(err, "не удалось объявить exchange")
-	}
-
 	q, err := ch.QueueDeclare(
 		"events", // name
 		true,     // durable
@@ -46,7 +33,7 @@ func ProcessMessagesFromQueue(ctx context.Context, conn amqp.Connection) error {
 
 	err = ch.QueueBind(
 		q.Name,
-		"events",
+		"",
 		"notify_about_event",
 		false,
 		nil,

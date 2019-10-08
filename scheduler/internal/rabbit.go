@@ -19,19 +19,6 @@ func SendMessagesToQueue(ctx context.Context, conn amqp.Connection, events []Eve
 	}
 	defer ch.Close()
 
-	err = ch.ExchangeDeclare(
-		"notify_about_event", // name
-		"direct",             // type
-		true,                 // durable
-		false,                // auto-deleted
-		false,                // internal
-		false,                // no-wait
-		nil,                  // arguments
-	)
-	if err != nil {
-		return errors.Wrap(err, "не удалось объявить exchange")
-	}
-
 	for _, event := range events {
 		data, err := json.Marshal(event)
 		if err != nil {
@@ -40,7 +27,7 @@ func SendMessagesToQueue(ctx context.Context, conn amqp.Connection, events []Eve
 
 		err = ch.Publish(
 			"notify_about_event",
-			"events",
+			"",
 			false,
 			false,
 			amqp.Publishing{
