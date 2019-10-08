@@ -4,12 +4,12 @@ Microservice calendar on Go
 ## Run HTTP Server
 
 ```
-go run cmd/server/http_server.go
+go run main.go http_server
 ```
 
 ## Run gRPC Server
 ```
-go run cmd/server/grpc_server.go
+go run main.go grpc_server
 ```
 
 ```

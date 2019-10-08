@@ -1,11 +1,11 @@
 run-http-server:
-	go run cmd/server/http_server.go
+	go run main.go http_server
 
 run-grpc-server:
-	go run cmd/server/grpc_server.go
+	go run main.go grpc_server
 
 run-grpc-client:
-	go run cmd/client/grpc_client.go
+	go run main.go grpc_client
 
 db-init:
 	psql postgres < scripts/000.sql
