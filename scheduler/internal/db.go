@@ -50,7 +50,7 @@ func (r *PostgresEventRepository) FindByTimeOfSendNotify(ctx context.Context, t 
 		return nil, errors.New("поиск событий по дате был прерван из-за отмены контекста")
 	}
 
-	query := `select * from events where time_send_notify > $1 `
+	query := `select * from events where time_send_notify < $1 `
 
 	rows, err := r.db.NamedQueryContext(ctx, query, t)
 	if err != nil {
