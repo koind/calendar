@@ -1,5 +1,5 @@
 # notifier
-Microservice Notifier - sends event notifications.
+Microservice Notifier - listens to the queue and sends event notifications.
 
 ## Run 
 
