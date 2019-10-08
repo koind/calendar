@@ -68,11 +68,9 @@ func ProcessMessagesFromQueue(ctx context.Context, conn amqp.Connection) error {
 		return errors.Wrap(err, "ошибка при приеме сообщений")
 	}
 
-	go func() {
-		for d := range msgs {
-			log.Println(string(d.Body))
-		}
-	}()
+	for d := range msgs {
+		log.Println(string(d.Body))
+	}
 
 	return nil
 }
