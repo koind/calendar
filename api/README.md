@@ -1,5 +1,5 @@
-# calendar
-Microservice calendar on Go
+# api
+Microservice API - provides a GRPC interface for users, implements methods for creating, modifying, searching, and deleting events.
 
 ## Run HTTP Server
 
@@ -12,6 +12,12 @@ go run main.go http_server
 go run main.go grpc_server
 ```
 
+## Run gRPC Client
+```
+go run main.go grpc_client
+```
+
+## Update proto file 
 ```
 protoc --go_out=plugins=grpc:. app/transport/grpc/pb/event.proto
 ```
