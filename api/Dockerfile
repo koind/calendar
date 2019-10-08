@@ -17,4 +17,4 @@ FROM alpine:latest
 
 COPY --from=build-env /opt/api /bin/api
 
-CMD ["/bin/api grpc_server"]
+CMD ["/bin/api", "grpc_server"]
