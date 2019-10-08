@@ -18,8 +18,8 @@ import (
 )
 
 var GrpcServerCmd = &cobra.Command{
-	Use:   "grpc_client",
-	Short: "Run grpc client",
+	Use:   "grpc_server",
+	Short: "Run grpc server",
 	Run: func(cmd *cobra.Command, args []string) {
 		cfg := config.Init(config.Path)
 

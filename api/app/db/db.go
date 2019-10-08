@@ -4,7 +4,7 @@ import (
 	"context"
 	_ "github.com/jackc/pgx/stdlib"
 	"github.com/jmoiron/sqlx"
-	"github.com/koind/calendar/app/config"
+	"github.com/koind/calendar/api/app/config"
 	"github.com/pkg/errors"
 )
 

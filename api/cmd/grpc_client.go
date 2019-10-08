@@ -12,8 +12,8 @@ import (
 )
 
 var GrpcClientCmd = &cobra.Command{
-	Use:   "grpc_server",
-	Short: "Run grpc server",
+	Use:   "grpc_client",
+	Short: "Run grpc client",
 	Run: func(cmd *cobra.Command, args []string) {
 		cfg := config.Init(config.Path)
 		clientConn, err := grpc.Dial(cfg.GRPCClient.GetDomain(), grpc.WithInsecure())
@@ -75,7 +75,7 @@ var GrpcClientCmd = &cobra.Command{
 }
 
 func init() {
-	GrpcServerCmd.Flags().StringVarP(
+	GrpcClientCmd.Flags().StringVarP(
 		&config.Path,
 		"config",
 		"c",

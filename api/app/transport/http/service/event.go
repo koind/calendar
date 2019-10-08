@@ -3,8 +3,8 @@ package service
 import (
 	"encoding/json"
 	"github.com/gorilla/mux"
-	"github.com/koind/calendar/app/domain/repository"
-	"github.com/koind/calendar/app/domain/service"
+	"github.com/koind/calendar/api/app/domain/repository"
+	"github.com/koind/calendar/api/app/domain/service"
 	"go.uber.org/zap"
 	"net/http"
 	"strconv"

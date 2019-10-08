@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"github.com/jmoiron/sqlx"
-	"github.com/koind/calendar/app/domain/repository"
+	"github.com/koind/calendar/api/app/domain/repository"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )

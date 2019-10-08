@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 	"github.com/golang/protobuf/ptypes"
-	"github.com/koind/calendar/app/domain/repository"
-	"github.com/koind/calendar/app/domain/service"
-	"github.com/koind/calendar/app/transport/grpc/pb"
+	"github.com/koind/calendar/api/app/domain/repository"
+	"github.com/koind/calendar/api/app/domain/service"
+	"github.com/koind/calendar/api/app/transport/grpc/pb"
 )
 
 // GRPC-сервер событий

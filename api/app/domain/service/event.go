@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"github.com/koind/calendar/app/domain/repository"
+	"github.com/koind/calendar/api/app/domain/repository"
 )
 
 // Интерфейс сервиса событий
