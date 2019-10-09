@@ -1,4 +1,4 @@
-FROM golang:1.12.6 as build-env
+FROM golang:1.12.10 as build-env
 
 LABEL maintainer="Damir Asylkhan<krosava_15d@mail.ru>"
 
