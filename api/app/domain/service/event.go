@@ -10,6 +10,9 @@ type EventServiceInterface interface {
 	// Создает новое событие
 	Create(ctx context.Context, event repository.Event) (*repository.Event, error)
 
+	// Возвращает список всех событий
+	FindAll(ctx context.Context) ([]*repository.Event, error)
+
 	// Обновляет событие
 	Update(ctx context.Context, ID int, event repository.Event) (*repository.Event, error)
 
@@ -37,6 +40,16 @@ func (service *EventService) Create(ctx context.Context, event repository.Event)
 	}
 
 	return newEvent, nil
+}
+
+// Возвращает список всех событий
+func (service *EventService) FindAll(ctx context.Context) ([]*repository.Event, error) {
+	events, err := service.eventRepository.FindAll(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return events, nil
 }
 
 // Обновляет событие

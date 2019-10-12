@@ -1,14 +1,17 @@
 package server
 
 import (
+	"context"
 	"github.com/koind/calendar/api/app/config"
+	"github.com/koind/calendar/api/app/db"
 	"github.com/koind/calendar/api/app/domain/service"
-	"github.com/koind/calendar/api/app/storage/memory"
+	"github.com/koind/calendar/api/app/storage/postgres"
 	httpServer "github.com/koind/calendar/api/app/transport/http/server"
 	httpService "github.com/koind/calendar/api/app/transport/http/service"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 	"log"
+	"time"
 )
 
 var HttpServerCmd = &cobra.Command{
@@ -23,7 +26,19 @@ var HttpServerCmd = &cobra.Command{
 		}
 		defer logger.Sync()
 
-		eventService := service.NewEventService(memory.NewEventRepository())
+		ctx, cancel := context.WithTimeout(
+			context.Background(),
+			time.Duration(cfg.Postgres.PingTimeout)*time.Millisecond,
+		)
+		defer cancel()
+
+		pg, err := db.IntPostgres(ctx, config.Postgres(cfg.Postgres))
+		if err != nil {
+			log.Fatalf("failing to connect to the database %v", err)
+		}
+
+		eventRepository := postgres.NewEventRepository(context.Background(), pg, *logger)
+		eventService := service.NewEventService(eventRepository)
 		httpEventService := httpService.NewEventService(eventService, logger)
 		hs := httpServer.NewHTTPServer(httpEventService, cfg.HTTPServer.GetDomain())
 

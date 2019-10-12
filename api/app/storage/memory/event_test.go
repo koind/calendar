@@ -101,3 +101,16 @@ func TestEventRepository_FindByID(t *testing.T) {
 		assert.EqualError(t, err, repository.EventNotFountError.Error(), "ошибки должны совподать")
 	}
 }
+
+func TestEventRepository_FindAll(t *testing.T) {
+	before()
+
+	events, err := eventRepository.FindAll(context.Background())
+	assert.NoError(t, err)
+	assert.Len(t, events, 1)
+
+	after()
+
+	events, _ = eventRepository.FindAll(context.Background())
+	assert.Len(t, events, 0)
+}

@@ -93,6 +93,21 @@ func (service *EventService) UpdateHandle(w http.ResponseWriter, r *http.Request
 	}
 }
 
+// Предоставляет список всех событий
+func (service *EventService) FindAllHandle(w http.ResponseWriter, r *http.Request) {
+	events, err := service.FindAll(r.Context())
+	if err != nil {
+		service.logger.Error(
+			"Во время получения списка всех событий возникла ошибка",
+			zap.Error(err),
+		)
+
+		w.Write([]byte(err.Error()))
+	} else {
+		json.NewEncoder(w).Encode(events)
+	}
+}
+
 // Обработчик удаления события
 func (service *EventService) DeleteHandle(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)

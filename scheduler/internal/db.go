@@ -74,11 +74,11 @@ func (r *PostgresEventRepository) FindByTimeOfSendNotify(ctx context.Context, t 
 
 // Модель событий
 type Event struct {
-	ID             int           `json:"id"`                         //ID - уникальный идентификатор события
-	Title          string        `json:"title"`                      //Заголовок - короткий текст
-	Datetime       time.Time     `json:"datetime"`                   //Дата и время события
-	Duration       time.Duration `json:"duration"`                   //Длительность события
-	Description    string        `json:"description,omitempty"`      //Описание события, опционально
-	UserId         int           `json:"user_id"`                    //Пользователь, владелец события
-	TimeSendNotify time.Time     `json:"time_send_notify,omitempty"` //За сколько времени высылать уведомление, опционально
+	ID             int           `json:"id" db:"id"`                                       //ID - уникальный идентификатор события
+	Title          string        `json:"title" db:"title"`                                 //Заголовок - короткий текст
+	Datetime       time.Time     `json:"datetime" db:"datetime"`                           //Дата и время события
+	Duration       time.Duration `json:"duration" db:"duration"`                           //Длительность события
+	Description    string        `json:"description,omitempty" db:"description"`           //Описание события, опционально
+	UserId         int           `json:"user_id" db:"user_id"`                             //Пользователь, владелец события
+	TimeSendNotify time.Time     `json:"time_send_notify,omitempty" db:"time_send_notify"` //За сколько времени высылать уведомление, опционально
 }

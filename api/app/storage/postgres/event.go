@@ -77,6 +77,36 @@ func (r *EventRepository) FindByID(ctx context.Context, ID int) (*repository.Eve
 	return event, nil
 }
 
+// Возвращает список всех событий
+func (r *EventRepository) FindAll(ctx context.Context) ([]*repository.Event, error) {
+	if ctx.Err() == context.Canceled {
+		r.logger.Info("Поиск всех событий был прерван из-за отмены контекста")
+
+		return nil, errors.New("поиск всех событий был прерван из-за отмены контекста")
+	}
+
+	query := `select * from events`
+
+	rows, err := r.DB.QueryxContext(ctx, query)
+	if err != nil {
+		return nil, errors.Wrap(err, "ошибка во время поиска событий")
+	}
+
+	events := make([]*repository.Event, 0)
+
+	for rows.Next() {
+		var event repository.Event
+		err := rows.StructScan(&event)
+		if err != nil {
+			return nil, errors.Wrap(err, "ошибка во время сканировании результатов структуры")
+		}
+
+		events = append(events, &event)
+	}
+
+	return events, nil
+}
+
 // Создает новое событие
 func (r *EventRepository) Create(ctx context.Context, event repository.Event) (*repository.Event, error) {
 	if ctx.Err() == context.Canceled {

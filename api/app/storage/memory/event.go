@@ -31,6 +31,24 @@ func (r *EventRepository) FindByID(ctx context.Context, ID int) (*repository.Eve
 	return &event, nil
 }
 
+// Возвращает список всех событий
+func (r *EventRepository) FindAll(ctx context.Context) ([]*repository.Event, error) {
+	r.RLock()
+	defer r.RUnlock()
+
+	if len(r.DB) <= 0 {
+		return nil, nil
+	}
+
+	events := make([]*repository.Event, 0, len(r.DB))
+
+	for _, event := range r.DB {
+		events = append(events, &event)
+	}
+
+	return events, nil
+}
+
 // Создает новое событие
 func (r *EventRepository) Create(ctx context.Context, event repository.Event) (*repository.Event, error) {
 	r.Lock()
