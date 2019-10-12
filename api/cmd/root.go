@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	client "github.com/koind/calendar/api/cmd/client"
+	"github.com/koind/calendar/api/cmd/server"
 	"github.com/spf13/cobra"
 	"log"
 )
@@ -11,9 +13,9 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(GrpcServerCmd)
-	rootCmd.AddCommand(GrpcClientCmd)
-	rootCmd.AddCommand(HttpServerCmd)
+	rootCmd.AddCommand(server.GrpcServerCmd)
+	rootCmd.AddCommand(server.HttpServerCmd)
+	rootCmd.AddCommand(client.GrpcClientCmd)
 }
 
 func Execute() {

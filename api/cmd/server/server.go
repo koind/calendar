@@ -1,4 +1,4 @@
-package cmd
+package server
 
 import (
 	"github.com/koind/calendar/api/app/config"

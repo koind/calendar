@@ -27,7 +27,7 @@ protoc --go_out=plugins=grpc:. app/transport/grpc/pb/event.proto
 ##### Create new event
 
 ```bash
-curl -X "POST" "http://localhost:7777/event" \
+curl -X "POST" "http://localhost:7766/event" \
      -H 'Content-Type: application/json' \
      -H 'Accept: application/json' \
      -d $'{
@@ -57,7 +57,7 @@ Result:
 ##### Update event
 
 ```bash
-curl -X "PUT" "http://localhost:7777/event/123" \
+curl -X "PUT" "http://localhost:7766/event/123" \
      -H 'Content-Type: application/json' \
      -H 'Accept: application/json' \
      -d $'{
@@ -88,7 +88,7 @@ Result:
 ##### Delete event
 
 ```bash
-curl -X "DELETE" "http://localhost:7777/event/123"
+curl -X "DELETE" "http://localhost:7766/event/123"
 ```
 
 Result:
