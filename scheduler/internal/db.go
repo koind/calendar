@@ -30,6 +30,9 @@ func IntPostgres(ctx context.Context, options Postgres) (*sqlx.DB, error) {
 type EventRepositoryInterface interface {
 	// Ищет события по времени отправки уведомления
 	FindByTimeOfSendNotify(ctx context.Context, t time.Time) ([]Event, error)
+
+	// Удаляет старые события
+	DeleteOldEvents(ctx context.Context, t time.Time) error
 }
 
 // Конструктор postgres репозитория событий
@@ -70,6 +73,22 @@ func (r *PostgresEventRepository) FindByTimeOfSendNotify(ctx context.Context, t 
 	}
 
 	return events, nil
+}
+
+// Удаляет старые события
+func (r *PostgresEventRepository) DeleteOldEvents(ctx context.Context, t time.Time) error {
+	if ctx.Err() == context.Canceled {
+		return errors.New("удаление старых событий было прервано из-за отмены контекста")
+	}
+
+	query := `delete from events where datetime < $1 `
+
+	_, err := r.db.ExecContext(ctx, query, t)
+	if err != nil {
+		return errors.Wrap(err, "ошибка во время удаления старых событий")
+	}
+
+	return nil
 }
 
 // Модель событий

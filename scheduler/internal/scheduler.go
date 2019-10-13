@@ -23,5 +23,10 @@ func Run(ctx context.Context, db *sqlx.DB, conn amqp.Connection) error {
 		return err
 	}
 
+	err = eventRepository.DeleteOldEvents(ctx, time.Now().AddDate(-1, 0, 0))
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
