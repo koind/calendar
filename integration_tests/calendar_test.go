@@ -67,13 +67,13 @@ func (test *notifyTest) startConsuming(interface{}) {
 	panicOnErr(err)
 
 	// Consume
-	_, err = test.ch.QueueDeclare(queueName, true, true, true, false, nil)
+	_, err = test.ch.QueueDeclare(queueName, true, false, true, false, nil)
 	panicOnErr(err)
 
 	err = test.ch.QueueBind(queueName, "", exchangeName, false, nil)
 	panicOnErr(err)
 
-	events, err := test.ch.Consume(queueName, "", true, true, false, false, nil)
+	events, err := test.ch.Consume(queueName, "", true, false, false, false, nil)
 	panicOnErr(err)
 
 	go func(stop <-chan struct{}) {

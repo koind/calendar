@@ -44,17 +44,6 @@ services:
       - db
       - rabbit
 
-  notifier:
-    build: ./notifier
-    depends_on:
-      - rabbit
-      - scheduler
-    restart: on-failure
-    environment:
-      NOTIFIER_MIC_AMQP_DSN: "amqp://guest:guest@rabbit:5672/"
-    networks:
-      - rabbit
-
   postgres:
     image: postgres:11.1
     ports:
