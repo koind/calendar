@@ -12,3 +12,9 @@ rmi:
 
 rm:
 	docker rm $(docker ps -a -f status=exited -q)
+
+test:
+	docker-compose -f docker-compose.test.yml up --build -d ;\
+	docker-compose -f docker-compose.test.yml run integration_tests go test -v ./... || test_status=$$? ;\
+	docker-compose -f docker-compose.test.yml down ;\
+	echo "status="$$test_status;exit $$test_status ;\

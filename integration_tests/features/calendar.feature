@@ -1,3 +1,8 @@
+# file: features/notification.feature
+
+# http://localhost:7766/
+# http://api:7766/
+
 Feature: microservices for calendar implementation
   It should be possible to create, update events.
   Also receive event lists.

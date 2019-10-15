@@ -7,6 +7,17 @@ networks:
     driver: bridge
 
 services:
+  integration_tests:
+    build: ./integration_tests
+    command: "true"
+    links:
+      - api
+      - scheduler
+    environment:
+      TESTS_AMQP_DSN: "amqp://guest:guest@rabbit:5672/"
+    networks:
+      - rabbit
+
   api:
     build: ./api
     depends_on:
@@ -14,8 +25,6 @@ services:
     restart: on-failure
     ports:
       - "7766:7766"
-    expose:
-      - 7766
     environment:
       API_MIC_DB_DSN: "postgres://calendar:123123@postgres:5432/calendar?sslmode=disable"
       API_MIC_SERVER_ADDR: ":7766"
@@ -50,8 +59,6 @@ services:
     image: postgres:11.1
     ports:
       - "5432:5432"
-    expose:
-      - 5432
     environment:
       POSTGRES_USER: calendar
       POSTGRES_PASSWORD: 123123
@@ -64,10 +71,7 @@ services:
   rabbit:
     image: rabbitmq:3.7.17-management
     ports:
-      - "15672:15672"
       - "5672:5672"
-    expose:
-      - 15672
     volumes:
       - ./rabbit.def.json:/etc/rabbitmq/definitions.json:ro
       - ./rabbit.config:/etc/rabbitmq/rabbitmq.config:ro
