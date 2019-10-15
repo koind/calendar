@@ -31,7 +31,6 @@ curl -X "POST" "http://localhost:7766/event" \
      -H 'Content-Type: application/json' \
      -H 'Accept: application/json' \
      -d $'{
-        "uuid": 123,
         "title": "test1",
         "datetime": "2019-08-18T10:00:00Z",
         "duration": 15,

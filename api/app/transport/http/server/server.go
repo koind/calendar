@@ -26,8 +26,8 @@ func NewHTTPServer(handleService *service.EventService, domain string) *HttpServ
 
 	r.HandleFunc("/event", handleService.CreateHandle).Methods("POST")
 	r.HandleFunc("/events", handleService.FindAllHandle).Methods("GET")
-	r.HandleFunc("/event/{uuid}", handleService.UpdateHandle).Methods("PUT")
-	r.HandleFunc("/event/{uuid}", handleService.DeleteHandle).Methods("DELETE")
+	r.HandleFunc("/event/{id}", handleService.UpdateHandle).Methods("PUT")
+	r.HandleFunc("/event/{id}", handleService.DeleteHandle).Methods("DELETE")
 
 	http.Handle("/", r)
 

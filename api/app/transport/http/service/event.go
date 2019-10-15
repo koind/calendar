@@ -56,7 +56,7 @@ func (service *EventService) CreateHandle(w http.ResponseWriter, r *http.Request
 func (service *EventService) UpdateHandle(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
-	if id, ok := vars["uuid"]; ok {
+	if id, ok := vars["id"]; ok {
 		uuid, err := strconv.Atoi(id)
 		if err != nil {
 			w.Write([]byte(err.Error()))
@@ -112,7 +112,7 @@ func (service *EventService) FindAllHandle(w http.ResponseWriter, r *http.Reques
 func (service *EventService) DeleteHandle(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
-	if id, ok := vars["uuid"]; ok {
+	if id, ok := vars["id"]; ok {
 		uuid, err := strconv.Atoi(id)
 		if err != nil {
 			w.Write([]byte(err.Error()))

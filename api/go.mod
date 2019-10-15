@@ -4,6 +4,7 @@ go 1.12
 
 require (
 	github.com/BurntSushi/toml v0.3.1
+	github.com/DATA-DOG/godog v0.7.13
 	github.com/cockroachdb/apd v1.1.0 // indirect
 	github.com/golang/protobuf v1.3.2
 	github.com/gorilla/mux v1.7.3
