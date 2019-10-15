@@ -15,6 +15,9 @@ RUN CGO_ENABLED=0 go build -o /opt/api
 # Release
 FROM alpine:latest
 
-COPY --from=build-env /opt/api /bin/api
+WORKDIR /root/
 
-CMD ["/bin/api", "http_server"]
+COPY --from=build-env /opt/api .
+COPY --from=build-env /api/config ./config
+
+CMD ["./api", "http_server", "--config=./config/development/config.toml"]

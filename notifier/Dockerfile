@@ -15,6 +15,9 @@ RUN CGO_ENABLED=0 go build -o /opt/notifier
 # Release
 FROM alpine:latest
 
-COPY --from=build-env /opt/notifier /bin/notifier
+WORKDIR /root/
 
-CMD ["/bin/notifier"]
+COPY --from=build-env /opt/notifier .
+COPY --from=build-env /notifier/config ./config
+
+CMD ["./notifier", "--config=./config/development/config.toml"]

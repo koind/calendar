@@ -15,6 +15,9 @@ RUN CGO_ENABLED=0 go build -o /opt/scheduler
 # Release
 FROM alpine:latest
 
-COPY --from=build-env /opt/scheduler /bin/scheduler
+WORKDIR /root/
 
-CMD ["/bin/scheduler"]
+COPY --from=build-env /opt/scheduler .
+COPY --from=build-env /scheduler/config ./config
+
+CMD ["./scheduler", "--config=./config/development/config.toml"]
