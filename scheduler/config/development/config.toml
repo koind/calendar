@@ -1,4 +1,4 @@
-Interval = 120 #2 minutes
+Interval = 5 #second
 
 [Postgres]
 DSN = "postgres://calendar:123123@postgres:5432/calendar?sslmode=disable"
