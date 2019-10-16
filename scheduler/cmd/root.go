@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/streadway/amqp"
 	"log"
+	"sync"
 	"time"
 )
 
@@ -33,8 +34,11 @@ var rootCmd = &cobra.Command{
 		defer conn.Close()
 
 		ticker := time.NewTicker(time.Duration(cfg.Interval) * time.Second)
+		wg := sync.WaitGroup{}
 
+		wg.Add(1)
 		go func() {
+			defer wg.Done()
 			for {
 				select {
 				case <-ticker.C:
@@ -45,6 +49,8 @@ var rootCmd = &cobra.Command{
 				}
 			}
 		}()
+
+		wg.Wait()
 	},
 }
 
