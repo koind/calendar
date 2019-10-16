@@ -16,6 +16,7 @@ services:
     environment:
       TESTS_AMQP_DSN: "amqp://guest:guest@rabbit:5672/"
     networks:
+      - db
       - rabbit
 
   api:
@@ -30,9 +31,11 @@ services:
       API_MIC_SERVER_ADDR: ":7766"
     networks:
       - db
+      - rabbit
 
   scheduler:
     build: ./scheduler
+    command: ./scheduler --config=./config/development/config.toml
     depends_on:
       - postgres
       - rabbit
@@ -60,7 +63,10 @@ services:
   rabbit:
     image: rabbitmq:3.7.17-management
     ports:
+      - "15672:15672"
       - "5672:5672"
+    expose:
+      - 15672
     volumes:
       - ./rabbit.def.json:/etc/rabbitmq/definitions.json:ro
       - ./rabbit.config:/etc/rabbitmq/rabbitmq.config:ro

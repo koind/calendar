@@ -141,7 +141,8 @@ func (test *notifyTest) iSendRequestToWithDataForUpdate(httpMethod, url, content
 		if err != nil {
 			panic(err)
 		}
-		req.Header.Set("Content-Type", contentType+"; charset=utf-8")
+		req.Header.Set("Content-Type", contentType)
+		req.Header.Set("Accept", contentType)
 		r, err = client.Do(req)
 	default:
 		err = fmt.Errorf("unknown method: %s", httpMethod)
@@ -234,7 +235,7 @@ func (test *notifyTest) iChangeTimeForEvent() error {
 }
 
 func (test *notifyTest) iReceiveEventWithTitle(title string) error {
-	time.Sleep(4 * time.Second)
+	time.Sleep(2 * time.Minute)
 
 	test.messagesMutex.RLock()
 	defer test.messagesMutex.RUnlock()
@@ -259,18 +260,18 @@ func FeatureContext(s *godog.Suite) {
 
 	s.BeforeScenario(test.startConsuming)
 
-	s.Step(`^I send "([^"]*)" request to "([^"]*)" with "([^"]*)" data:$`, test.iSendRequestToWithData)
+	s.Step(`^1. I send "([^"]*)" request to "([^"]*)" with "([^"]*)" data:$`, test.iSendRequestToWithData)
 	s.Step(`^The response code should be (\d+)$`, test.theResponseCodeShouldBe)
 
-	s.Step(`^I send "([^"]*)" request to "([^"]*)" with "([^"]*)" data:$`, test.iSendRequestToWithDataForUpdate)
+	s.Step(`^2. I send "([^"]*)" request to "([^"]*)" with "([^"]*)" data:$`, test.iSendRequestToWithDataForUpdate)
 	s.Step(`^The response code should be (\d+)$`, test.theResponseCodeShouldBe)
 	s.Step(`^The response should match title "([^"]*)"$`, test.theResponseShouldMatchTitle)
 
-	s.Step(`^I send "([^"]*)" request to "([^"]*)"$`, test.iSendRequestTo)
+	s.Step(`^3. I send "([^"]*)" request to "([^"]*)"$`, test.iSendRequestTo)
 	s.Step(`^The response code should be (\d+)$`, test.theResponseCodeShouldBe)
 	s.Step(`^The response should match json:$`, test.theResponseShouldMatchJson)
 
-	s.Step(`^I change time_send_notify for event$`, test.iChangeTimeForEvent)
+	s.Step(`^4. I change time_send_notify for event$`, test.iChangeTimeForEvent)
 	s.Step(`^I receive event with title "([^"]*)"$`, test.iReceiveEventWithTitle)
 
 	s.AfterScenario(test.stopConsuming)
