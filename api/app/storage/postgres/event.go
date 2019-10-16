@@ -13,8 +13,9 @@ const (
 	querySelectEventByID = `SELECT * FROM events WHERE id=$1`
 	queryInsertEvent     = `INSERT INTO events(title, datetime, duration, description, user_id, time_send_notify)
 		VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`
-	queryUpdateEventByID = `UPDATE events SET title=$1 WHERE id=$2`
-	queryDeleteEventByID = `DELETE FROM events WHERE id=$1`
+	queryUpdateTitleEventByID          = `UPDATE events SET title=$1 WHERE id=$2`
+	queryUpdateTimeSendNotifyEventByID = `UPDATE events SET time_send_notify=$1 WHERE id=$2`
+	queryDeleteEventByID               = `DELETE FROM events WHERE id=$1`
 )
 
 // Конструктор репозитория событий
@@ -146,7 +147,14 @@ func (r *EventRepository) Update(ctx context.Context, ID int, event repository.E
 		return nil, errors.New("обновление события было прервано из-за отмены контекста")
 	}
 
-	_, err := r.DB.ExecContext(context.Background(), queryUpdateEventByID, event.Title, ID)
+	var err error
+
+	if event.Title != "" {
+		_, err = r.DB.ExecContext(context.Background(), queryUpdateTitleEventByID, event.Title, ID)
+	} else {
+		_, err = r.DB.ExecContext(context.Background(), queryUpdateTimeSendNotifyEventByID, event.TimeSendNotify, ID)
+	}
+
 	if err != nil {
 		return nil, errors.Wrap(err, "ошибка во время обновления события")
 	}
