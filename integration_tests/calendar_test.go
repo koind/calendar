@@ -235,7 +235,7 @@ func (test *notifyTest) iChangeTimeForEvent() error {
 }
 
 func (test *notifyTest) iReceiveEventWithTitle(title string) error {
-	time.Sleep(2 * time.Minute)
+	time.Sleep(120 * time.Second)
 
 	test.messagesMutex.RLock()
 	defer test.messagesMutex.RUnlock()

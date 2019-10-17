@@ -54,7 +54,7 @@ func (r *PostgresEventRepository) FindByTimeOfSendNotify(ctx context.Context, t 
 	}
 
 	events := make([]Event, 0)
-	query := `select * from events where time_send_notify < $1`
+	query := `select * from events where time_send_notify > $1`
 
 	err := r.db.SelectContext(ctx, &events, query, t)
 	if err != nil {

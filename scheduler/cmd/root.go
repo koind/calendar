@@ -18,7 +18,7 @@ var rootCmd = &cobra.Command{
 
 		ctx, cancel := context.WithTimeout(
 			context.Background(),
-			time.Duration(cfg.Postgres.PingTimeout)*time.Millisecond,
+			time.Duration(cfg.Postgres.PingTimeout)*time.Second,
 		)
 		defer cancel()
 

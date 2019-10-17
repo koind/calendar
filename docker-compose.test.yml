@@ -1,23 +1,12 @@
 version: "3"
 
-networks:
-  rabbit:
-    driver: bridge
-  db:
-    driver: bridge
-
 services:
   integration_tests:
     build: ./integration_tests
     command: "true"
-    links:
-      - api
-      - scheduler
     environment:
       TESTS_AMQP_DSN: "amqp://guest:guest@rabbit:5672/"
-    networks:
-      - db
-      - rabbit
+    tty: true
 
   api:
     build: ./api
@@ -26,29 +15,18 @@ services:
     restart: on-failure
     ports:
       - "7766:7766"
-    environment:
-      API_MIC_DB_DSN: "postgres://calendar:123123@postgres:5432/calendar?sslmode=disable"
-      API_MIC_SERVER_ADDR: ":7766"
-    networks:
-      - db
-      - rabbit
+    tty: true
 
   scheduler:
     build: ./scheduler
-    command: ./scheduler --config=./config/development/config.toml
     depends_on:
+      - rabbit
       - postgres
-      - rabbit
     restart: on-failure
-    environment:
-      SCHEDULER_MIC_DB_DSN: "postgres://calendar:123123@postgres:5432/calendar?sslmode=disable"
-      SCHEDULER_MIC_AMQP_DSN: "amqp://guest:guest@rabbit:5672/"
-    networks:
-      - db
-      - rabbit
+    tty: true
 
   postgres:
-    image: postgres:11.1
+    image: postgres:11.2
     ports:
       - "5432:5432"
     environment:
@@ -57,8 +35,6 @@ services:
       POSTGRES_DB: calendar
     volumes:
       - ./setup.sql:/docker-entrypoint-initdb.d/setup.sql
-    networks:
-      - db
 
   rabbit:
     image: rabbitmq:3.7.17-management
@@ -70,5 +46,3 @@ services:
     volumes:
       - ./rabbit.def.json:/etc/rabbitmq/definitions.json:ro
       - ./rabbit.config:/etc/rabbitmq/rabbitmq.config:ro
-    networks:
-      - rabbit
