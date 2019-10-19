@@ -37,7 +37,7 @@ type notifyTest struct {
 	conn          *amqp.Connection
 	ch            *amqp.Channel
 	messages      [][]byte
-	messagesMutex *sync.RWMutex
+	messagesMutex sync.RWMutex
 	stopSignal    chan struct{}
 
 	responseStatusCode int
@@ -55,7 +55,7 @@ func panicOnErr(err error) {
 
 func (test *notifyTest) startConsuming(interface{}) {
 	test.messages = make([][]byte, 0)
-	test.messagesMutex = new(sync.RWMutex)
+	test.messagesMutex = sync.RWMutex{}
 	test.stopSignal = make(chan struct{})
 
 	var err error

@@ -2,7 +2,7 @@ version: "3"
 
 services:
   integration_tests:
-    build: ./integration_tests
+    build: ./e2e
     command: "true"
     environment:
       TESTS_AMQP_DSN: "amqp://guest:guest@rabbit:5672/"

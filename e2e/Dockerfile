@@ -2,8 +2,7 @@ FROM golang:1.12.10
 
 LABEL maintainer="Damir Asylkhan<krosava_15d@mail.ru>"
 
-RUN mkdir -p /opt/integration_tests
-WORKDIR /opt/integration_tests
+WORKDIR /opt/e2e
 
 COPY go.mod go.sum ./
 
