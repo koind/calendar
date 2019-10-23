@@ -19,7 +19,7 @@ var (
 		Help:      "Requests per second",
 	})
 	responseStatus = prometheus.NewCounterVec(prometheus.CounterOpts{
-		Namespace: "api12",
+		Namespace: "api",
 		Name:      "response_status",
 		Help:      "Response status of endpoints.",
 	}, []string{"method"})
