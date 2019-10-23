@@ -28,6 +28,10 @@ services:
       - postgres
       - rabbit
     restart: on-failure
+    ports:
+      - "9878:9878"
+    expose:
+      - 9878
     environment:
       SCHEDULER_MIC_DB_DSN: "postgres://calendar:123123@postgres:5432/calendar?sslmode=disable"
       SCHEDULER_MIC_AMQP_DSN: "amqp://guest:guest@rabbit:5672/"
@@ -72,4 +76,32 @@ services:
       - ./rabbit.def.json:/etc/rabbitmq/definitions.json:ro
       - ./rabbit.config:/etc/rabbitmq/rabbitmq.config:ro
     networks:
+      - rabbit
+
+  postgres-exporter:
+    image: wrouesnel/postgres_exporter:v0.5.1
+    ports:
+      - "9187:9187"
+    environment:
+      DATA_SOURCE_NAME: "postgres://calendar:123123@postgres:5432/calendar?sslmode=disable"
+    networks:
+      - db
+      - rabbit
+
+  prometheus:
+    image: prom/prometheus:v2.13.1
+    depends_on:
+      - postgres
+      - api
+      - scheduler
+      - postgres-exporter
+    ports:
+      - '9090:9090'
+    volumes:
+      - ${PWD}/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    networks:
+      - db
       - rabbit

@@ -8,9 +8,11 @@ import (
 	"github.com/koind/calendar/api/app/storage/postgres"
 	httpServer "github.com/koind/calendar/api/app/transport/http/server"
 	httpService "github.com/koind/calendar/api/app/transport/http/service"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 	"log"
+	"net/http"
 	"time"
 )
 
@@ -41,6 +43,8 @@ var HttpServerCmd = &cobra.Command{
 		eventService := service.NewEventService(eventRepository)
 		httpEventService := httpService.NewEventService(eventService, logger)
 		hs := httpServer.NewHTTPServer(httpEventService, cfg.HTTPServer.GetDomain())
+
+		go http.ListenAndServe(cfg.Prometheus.GetPort(), promhttp.Handler())
 
 		logger.Error("Error starting app", zap.Error(hs.Start()))
 	},

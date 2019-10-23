@@ -16,6 +16,7 @@ type Options struct {
 	GRPCServer GRPCServer
 	HTTPServer HTTPServer
 	GRPCClient GRPCClient
+	Prometheus Prometheus
 }
 
 // Инициализирует конфигурации микросервиса
@@ -75,4 +76,14 @@ func (c GRPCClient) GetDomain() string {
 // Возвращает таймаут
 func (c GRPCClient) GetTimeout() time.Duration {
 	return time.Duration(c.Timeout) * time.Millisecond
+}
+
+// Настройки Prometheus
+type Prometheus struct {
+	Port int
+}
+
+// Возвращает port
+func (c Prometheus) GetPort() string {
+	return fmt.Sprintf(":%d", c.Port)
 }

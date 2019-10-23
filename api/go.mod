@@ -13,8 +13,10 @@ require (
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/koind/calendar v0.0.0-20191006091504-0970481e0af2
 	github.com/pkg/errors v0.8.1
+	github.com/prometheus/client_golang v1.2.1
 	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/shopspring/decimal v0.0.0-20190905144223-a36b5d85f337 // indirect
+	github.com/slok/go-http-metrics v0.4.0 // indirect
 	github.com/spf13/cobra v0.0.5
 	github.com/stretchr/testify v1.4.0
 	go.uber.org/zap v1.10.0

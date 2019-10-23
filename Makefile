@@ -7,6 +7,11 @@ up:
 down:
 	docker-compose down --remove-orphans
 
+reup:
+	docker-compose down --remove-orphans ;\
+	docker-compose build ;\
+	docker-compose up -d ;\
+
 rmi:
 	docker rmi $(docker images -a -q)
 
