@@ -4,7 +4,16 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/pkg/errors"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/streadway/amqp"
+)
+
+var (
+	RPSCounter = prometheus.NewCounter(prometheus.CounterOpts{
+		Namespace: "scheduler",
+		Name:      "rps",
+		Help:      "Requests per second",
+	})
 )
 
 // Отправляет сообщения в очередь
@@ -35,6 +44,11 @@ func SendMessagesToQueue(ctx context.Context, conn amqp.Connection, events []Eve
 				Body:        data,
 			},
 		)
+		if err != nil {
+			return errors.Wrap(err, "не удалось отправить сообщение")
+		}
+
+		RPSCounter.Inc()
 	}
 
 	return nil

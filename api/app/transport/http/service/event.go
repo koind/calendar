@@ -33,6 +33,7 @@ var (
 func init() {
 	prometheus.MustRegister(RPSCounter)
 	prometheus.MustRegister(responseTimeSummary)
+	prometheus.MustRegister(responseStatus)
 }
 
 // Http сервис событий

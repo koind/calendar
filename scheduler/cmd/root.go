@@ -3,9 +3,11 @@ package cmd
 import (
 	"context"
 	"github.com/koind/calendar/scheduler/internal"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/spf13/cobra"
 	"github.com/streadway/amqp"
 	"log"
+	"net/http"
 	"sync"
 	"time"
 )
@@ -48,6 +50,13 @@ var rootCmd = &cobra.Command{
 					}
 				}
 			}
+		}()
+
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+
+			http.ListenAndServe(cfg.Prometheus.GetPort(), promhttp.Handler())
 		}()
 
 		wg.Wait()

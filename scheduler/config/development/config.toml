@@ -9,3 +9,6 @@ ConnMaxLifetime = 15
 
 [RabbitMQ]
 URL = "amqp://guest:guest@rabbit:5672/"
+
+[Prometheus]
+Port = 9878

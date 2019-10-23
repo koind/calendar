@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"fmt"
 	"github.com/BurntSushi/toml"
 	"log"
 	"time"
@@ -11,9 +12,10 @@ var Path string
 
 // Настройки микросервиса
 type Options struct {
-	Interval int
-	Postgres Postgres
-	RabbitMQ RabbitMQ
+	Interval   int
+	Postgres   Postgres
+	RabbitMQ   RabbitMQ
+	Prometheus Prometheus
 }
 
 // Инициализирует конфигурации микросервиса
@@ -39,4 +41,14 @@ type Postgres struct {
 // Настройки RabbitMQ
 type RabbitMQ struct {
 	URL string
+}
+
+// Настройки Prometheus
+type Prometheus struct {
+	Port int
+}
+
+// Возвращает port
+func (c Prometheus) GetPort() string {
+	return fmt.Sprintf(":%d", c.Port)
 }
