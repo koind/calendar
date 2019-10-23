@@ -11,3 +11,4 @@ Implementation of creating, storing calendar events and sending notifications as
 
 - RabbitMQ
 - PostgreSQL
+- Prometheus
