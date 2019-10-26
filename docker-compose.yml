@@ -90,11 +90,6 @@ services:
 
   prometheus:
     image: prom/prometheus:v2.13.1
-    depends_on:
-      - postgres
-      - api
-      - scheduler
-      - postgres-exporter
     ports:
       - '9090:9090'
     volumes:
